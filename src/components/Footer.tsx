@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
         </div>
         <div className="flex items-center gap-4 sm:gap-8">
           <a
-            href="https://github.com/yourname/set-game-detector"
+            href="https://github.com/set-game/set-detector"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] sm:text-xs text-muted-foreground hover:text-set-purple transition-colors flex items-center gap-1"
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             GitHub
           </a>
           <a
-            href="/privacy"
+            href="#"
             className="text-[10px] sm:text-xs text-muted-foreground hover:text-set-red transition-colors flex items-center gap-1"
             aria-label="Privacy Policy"
           >
@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
             Privacy
           </a>
           <a
-            href="/terms"
+            href="#"
             className="text-[10px] sm:text-xs text-muted-foreground hover:text-set-green transition-colors flex items-center gap-1"
             aria-label="Terms of Service"
           >

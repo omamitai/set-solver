@@ -75,24 +75,24 @@ const Index: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      <main className="flex-1 flex flex-col pt-20 sm:pt-24 pb-6 sm:pb-10">
+      <main className="flex-1 flex flex-col pt-16 sm:pt-20 pb-6 sm:pb-10">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          {/* Title section with improved styling */}
-          <div className="text-center mb-6 sm:mb-10 animate-fade-in w-full max-w-3xl pt-4 sm:pt-6">
-            <div className="inline-flex items-center justify-center gap-2 bg-background/50 backdrop-blur-md rounded-full px-3 py-1 mb-3 sm:mb-4 border border-border/30 shadow-sm">
+          {/* Title section with reduced size */}
+          <div className="text-center mb-4 sm:mb-6 animate-fade-in w-full max-w-3xl pt-2 sm:pt-4">
+            <div className="inline-flex items-center justify-center gap-2 bg-background/50 backdrop-blur-md rounded-full px-3 py-1 mb-2 sm:mb-3 border border-border/30 shadow-sm">
               <Diamond className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-purple" />
               <Circle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-red" />
               <Triangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-green" />
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3 sm:mb-4 leading-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-2 sm:mb-3 leading-tight">
               SET Game Detector
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-4">
+            <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto mb-2">
               Upload an image of your SET card game layout and we'll identify all valid sets for you using AI.
             </p>
             
             {isMockMode && (
-              <div className="mt-2 mb-4 p-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-sm mx-auto text-[11px] sm:text-xs">
+              <div className="mt-1 mb-2 p-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-sm mx-auto text-[11px] sm:text-xs">
                 ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
               </div>
             )}
@@ -100,7 +100,7 @@ const Index: React.FC = () => {
             <div className="hidden sm:block">
               <button
                 onClick={scrollToHow}
-                className="mt-3 flex flex-col items-center gap-1 text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors mx-auto"
+                className="mt-2 flex flex-col items-center gap-1 text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors mx-auto"
                 aria-label="Learn how it works"
               >
                 <span>Learn how it works</span>
@@ -110,7 +110,7 @@ const Index: React.FC = () => {
           </div>
 
           {/* Main content area */}
-          <div className="w-full mb-14 sm:mb-16 bg-background/30 backdrop-blur-sm rounded-2xl border border-border/30 shadow-md p-5 sm:p-8 relative overflow-hidden">
+          <div className="w-full mb-10 sm:mb-12 bg-background/30 backdrop-blur-sm rounded-2xl border border-border/30 shadow-md p-4 sm:p-6 relative overflow-hidden">
             <div className="set-card-pattern opacity-10"></div>
             <div className="relative z-10">
               {!imageUrl ? (
@@ -134,11 +134,11 @@ const Index: React.FC = () => {
           <div 
             id="how-it-works"
             className={cn(
-              "w-full animate-fade-in mt-12 sm:mt-20 pt-4",
-              "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-6 sm:before:mb-8"
+              "w-full animate-fade-in mt-8 sm:mt-16 pt-4",
+              "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4 sm:before:mb-6"
             )}
           >
-            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-6 sm:mb-8 text-center">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-center">
               How It Works
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
