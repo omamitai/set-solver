@@ -6,6 +6,7 @@ import Results from "@/components/Results";
 import Footer from "@/components/Footer";
 import { Diamond, Circle, Triangle } from "lucide-react";
 import { toast } from "sonner";
+import { detectSets } from "@/core/setDetector";
 
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -18,16 +19,22 @@ const Index: React.FC = () => {
     setImageUrl(URL.createObjectURL(image));
     setIsProcessing(true);
 
-    // In a real implementation with Streamlit integration
-    // we would send the image to the backend here
-    setTimeout(() => {
-      // Simulate finding random number of sets (1-6)
-      const randomSets = Math.floor(Math.random() * 6) + 1;
-      setFoundSets(randomSets);
-      setIsProcessing(false);
+    try {
+      // Call our SET detection logic
+      const result = await detectSets(image);
       
-      toast.success(`Found ${randomSets} sets in the image!`);
-    }, 3000);
+      if (result.success) {
+        setFoundSets(result.setCount);
+        toast.success(`Found ${result.setCount} ${result.setCount === 1 ? 'set' : 'sets'} in the image!`);
+      } else {
+        toast.error(result.error || "Failed to process image");
+      }
+    } catch (error) {
+      console.error("Error processing image:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleReset = () => {
