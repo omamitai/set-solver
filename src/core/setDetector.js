@@ -3,11 +3,10 @@
  * SET Game Detector Core Logic
  * 
  * This file contains the core logic for detecting SET combinations in an image.
- * Configure for AWS deployment by uncommenting the AWS backend implementation.
  */
 
-// Change this to false when connecting to your AWS backend
-const USE_MOCK_DATA = true;
+// Read environment variables properly
+const USE_MOCK_DATA = process.env.REACT_APP_USE_MOCK_DATA === 'true';
 
 // Frontend-only mock implementation (for development)
 const mockDetectSets = async (imageFile) => {
@@ -23,7 +22,7 @@ const mockDetectSets = async (imageFile) => {
     return {
       success: true,
       setCount: mockNumSets,
-      // In real implementation with AWS backend, this would include processed image
+      image: URL.createObjectURL(imageFile) // Just return the original image in mock mode
     };
   } catch (error) {
     console.error("Error in mock SET detection:", error);
@@ -40,8 +39,15 @@ const awsDetectSets = async (imageFile) => {
   formData.append('image', imageFile);
   
   try {
-    // Replace with your AWS API Gateway endpoint
-    const endpoint = process.env.REACT_APP_AWS_API_ENDPOINT || 'https://your-api-gateway-id.execute-api.your-region.amazonaws.com/prod/detect-sets';
+    // Get the AWS API Gateway endpoint from environment variables
+    const endpoint = process.env.REACT_APP_AWS_API_ENDPOINT;
+    
+    if (!endpoint) {
+      console.error("AWS API endpoint not configured in environment variables");
+      throw new Error("API endpoint not configured");
+    }
+    
+    console.log("Calling AWS endpoint:", endpoint);
     
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -52,7 +58,10 @@ const awsDetectSets = async (imageFile) => {
       throw new Error(`API request failed with status ${response.status}`);
     }
     
-    return await response.json();
+    const result = await response.json();
+    console.log("AWS API response:", result);
+    
+    return result;
   } catch (error) {
     console.error("Error calling AWS SET detection API:", error);
     return {

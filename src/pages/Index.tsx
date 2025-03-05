@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import ImageUploader from "@/components/ImageUploader";
 import Results from "@/components/Results";
@@ -11,20 +10,33 @@ import { detectSets } from "@/core/setDetector";
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [processedImageUrl, setProcessedImageUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [foundSets, setFoundSets] = useState(0);
+  const [isMockMode, setIsMockMode] = useState(false);
+
+  useEffect(() => {
+    setIsMockMode(process.env.REACT_APP_USE_MOCK_DATA === 'true');
+    console.log("Mock mode:", process.env.REACT_APP_USE_MOCK_DATA);
+    console.log("API endpoint:", process.env.REACT_APP_AWS_API_ENDPOINT);
+  }, []);
 
   const handleImageSelected = async (image: File) => {
     setSelectedImage(image);
     setImageUrl(URL.createObjectURL(image));
+    setProcessedImageUrl(null);
     setIsProcessing(true);
 
     try {
-      // Call our SET detection logic
       const result = await detectSets(image);
       
       if (result.success) {
         setFoundSets(result.setCount);
+        
+        if (result.image && !isMockMode) {
+          setProcessedImageUrl(result.image);
+        }
+        
         toast.success(`Found ${result.setCount} ${result.setCount === 1 ? 'set' : 'sets'} in the image!`);
       } else {
         toast.error(result.error || "Failed to process image");
@@ -41,8 +53,12 @@ const Index: React.FC = () => {
     if (imageUrl) {
       URL.revokeObjectURL(imageUrl);
     }
+    if (processedImageUrl && processedImageUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(processedImageUrl);
+    }
     setSelectedImage(null);
     setImageUrl(null);
+    setProcessedImageUrl(null);
     setFoundSets(0);
   };
 
@@ -65,7 +81,6 @@ const Index: React.FC = () => {
       
       <main className="flex-1 pt-20 sm:pt-24 md:pt-28 section-padding">
         <div className="max-w-4xl mx-auto">
-          {/* Main content with sufficient padding to avoid overlap with fixed header */}
           <div className="text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in px-4 pt-6 sm:pt-4">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Diamond className="h-6 w-6 text-set-purple opacity-80" />
@@ -78,6 +93,12 @@ const Index: React.FC = () => {
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
               Upload an image of your SET card game layout and we'll identify all valid sets for you.
             </p>
+            
+            {isMockMode && (
+              <div className="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-lg max-w-2xl mx-auto text-sm">
+                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false in your .env file to use the real AWS backend.
+              </div>
+            )}
           </div>
 
           {!imageUrl ? (
@@ -88,6 +109,7 @@ const Index: React.FC = () => {
           ) : (
             <Results 
               imageUrl={imageUrl}
+              processedImageUrl={processedImageUrl}
               isProcessing={isProcessing}
               onReset={handleReset}
               foundSets={foundSets}

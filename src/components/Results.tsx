@@ -10,6 +10,7 @@ interface ResultsProps {
   isProcessing: boolean;
   onReset: () => void;
   foundSets: number;
+  processedImageUrl?: string | null;
 }
 
 const Results: React.FC<ResultsProps> = ({
@@ -17,8 +18,12 @@ const Results: React.FC<ResultsProps> = ({
   isProcessing,
   onReset,
   foundSets,
+  processedImageUrl,
 }) => {
   if (!imageUrl) return null;
+
+  // Display the processed image if available, otherwise show the original
+  const displayImageUrl = processedImageUrl || imageUrl;
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-6 sm:mt-10 animate-slide-up">
@@ -35,7 +40,7 @@ const Results: React.FC<ResultsProps> = ({
               </div>
             )}
             <img
-              src={imageUrl}
+              src={displayImageUrl}
               alt="Set game"
               className={cn(
                 "w-full h-auto object-contain max-h-[50vh] sm:max-h-[70vh] rounded-3xl",
