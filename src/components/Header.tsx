@@ -28,15 +28,15 @@ const Header: React.FC = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between",
         scrolled
-          ? "glass glass-dark shadow-sm backdrop-blur-lg"
+          ? "bg-background/70 shadow-sm backdrop-blur-lg ios-shadow"
           : "bg-transparent"
       )}
     >
       <div className="animate-fade-in flex items-center gap-2">
-        <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/20 flex items-center justify-center pulse-soft">
+        <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/10 flex items-center justify-center pulse-soft">
           <span className="text-primary font-bold text-base sm:text-lg">S</span>
         </div>
-        <h1 className="text-lg sm:text-xl font-semibold tracking-tight bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+        <h1 className="text-lg sm:text-xl font-semibold tracking-tight ios-text-gradient">
           Set Game Detector
         </h1>
       </div>
@@ -46,7 +46,7 @@ const Header: React.FC = () => {
           variant="outline"
           size="icon"
           onClick={toggleTheme}
-          className="rounded-full w-8 h-8 sm:w-10 sm:h-10 animate-fade-in transition-all hover:bg-background/80 glass glass-dark border-primary/10"
+          className="rounded-full w-8 h-8 sm:w-10 sm:h-10 animate-fade-in transition-all hover:bg-background/80 border-primary/10 ios-shadow"
           aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
         >
           {theme === "dark" ? (

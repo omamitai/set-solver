@@ -21,13 +21,13 @@ const Results: React.FC<ResultsProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-6 sm:mt-10 animate-slide-up">
-      <Card className="overflow-hidden rounded-3xl border-0 shadow-lg bg-set-gradient backdrop-blur-sm">
+      <Card className="overflow-hidden rounded-3xl border-0 shadow-lg bg-background/50 backdrop-blur-sm ios-shadow">
         <CardContent className="p-0">
           <div className="relative">
             {isProcessing && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-10 rounded-3xl">
                 <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full border-4 border-primary border-t-transparent animate-spin mb-4 sm:mb-6"></div>
-                <p className="text-foreground text-base sm:text-lg font-medium bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <p className="text-foreground text-base sm:text-lg font-medium ios-text-gradient">
                   Processing image...
                 </p>
               </div>
@@ -41,7 +41,7 @@ const Results: React.FC<ResultsProps> = ({
               )}
             />
             {!isProcessing && (
-              <div className="absolute top-4 right-4 sm:top-5 sm:right-5 bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-md px-4 py-2 sm:px-5 sm:py-3 text-sm sm:text-base font-semibold text-white rounded-full shadow-lg">
+              <div className="absolute top-4 right-4 sm:top-5 sm:right-5 bg-primary/80 backdrop-blur-md px-4 py-2 sm:px-5 sm:py-3 text-sm sm:text-base font-semibold text-white rounded-full shadow-lg">
                 Found: {foundSets} {foundSets === 1 ? "set" : "sets"}
               </div>
             )}
@@ -53,7 +53,7 @@ const Results: React.FC<ResultsProps> = ({
         <Button
           onClick={onReset}
           variant="outline"
-          className="hover-lift ios-button text-sm sm:text-base font-medium px-6 py-2 h-auto border-primary/20 hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/10"
+          className="hover-lift rounded-full text-sm sm:text-base font-medium px-6 py-2 h-auto border-primary/20 hover:bg-primary/5 transition-all duration-300"
           disabled={isProcessing}
         >
           Try Another Image

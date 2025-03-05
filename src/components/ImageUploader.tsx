@@ -66,7 +66,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       className={cn(
         "w-full max-w-xl mx-auto animate-scale-in transition-all duration-300",
         "rounded-3xl border-2 border-dashed p-6 sm:p-10 text-center",
-        "bg-set-gradient backdrop-blur-sm shadow-lg",
+        "bg-background/50 backdrop-blur-sm ios-shadow",
         dragActive 
           ? "border-primary/70 bg-primary/5 scale-[1.02]" 
           : "border-border/50 scale-100",
@@ -78,11 +78,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDrop={handleDrop}
     >
       <div className="flex flex-col items-center justify-center gap-4 sm:gap-6">
-        <div className="rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 p-4 shadow-inner">
+        <div className="rounded-full bg-primary/10 p-4 ios-shadow">
           <ArrowUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
         </div>
         <div className="space-y-2 sm:space-y-3">
-          <h3 className="text-base sm:text-xl md:text-2xl font-medium bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+          <h3 className="text-base sm:text-xl md:text-2xl font-medium ios-text-gradient">
             Upload your Set game image
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">
@@ -94,7 +94,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         </div>
         <Button
           onClick={handleButtonClick}
-          className="mt-2 sm:mt-3 ios-button hover-lift px-6 py-2 h-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
+          className="mt-2 sm:mt-3 rounded-full px-6 py-2 h-auto bg-primary hover:bg-primary/90 transition-all duration-300 font-medium"
           disabled={isProcessing}
         >
           Select Image

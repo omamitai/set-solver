@@ -1,73 +1,72 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 220 25% 97%;
+    --foreground: 224 71% 4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 71% 4%;
 
-    /* More vibrant Set-themed colors */
-    --primary: 340 80% 55%; /* Vibrant red */
-    --primary-foreground: 210 40% 98%;
+    /* More refined, classy colors */
+    --primary: 250 60% 50%; /* Deep blue-purple */
+    --primary-foreground: 220 25% 97%;
 
-    --secondary: 280 70% 60%; /* Rich purple */
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 340 50% 50%; /* Sophisticated red */
+    --secondary-foreground: 220 25% 97%;
 
-    --accent: 150 60% 50%; /* Green accent */
-    --accent-foreground: 210 40% 98%;
+    --accent: 210 40% 55%; /* Subtle blue accent */
+    --accent-foreground: 220 25% 97%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 10% 40%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 340 80% 55%;
+    --border: 220 20% 86%;
+    --input: 220 20% 86%;
+    --ring: 250 60% 50%;
 
-    --radius: 1.25rem; /* More iOS-like rounded corners */
+    --radius: 1.25rem; /* iOS-like rounded corners */
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 224 71% 4%;
+    --foreground: 220 25% 97%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 224 71% 4%;
+    --card-foreground: 220 25% 97%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 220 25% 97%;
 
-    /* Vibrant Set-themed colors for dark mode */
-    --primary: 340 70% 60%; /* Vibrant red */
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Refined dark mode colors */
+    --primary: 250 50% 60%; /* Deep blue-purple */
+    --primary-foreground: 220 25% 97%;
 
-    --secondary: 280 60% 65%; /* Rich purple */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 340 40% 55%; /* Sophisticated red */
+    --secondary-foreground: 220 25% 97%;
 
-    --accent: 150 55% 55%; /* Green accent */
-    --accent-foreground: 210 40% 98%;
+    --accent: 210 35% 60%; /* Subtle blue accent */
+    --accent-foreground: 220 25% 97%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 25% 65%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 340 70% 60%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 250 50% 60%;
   }
 }
 
@@ -78,7 +77,7 @@
   
   html {
     @apply scroll-smooth antialiased;
-    font-family: 'Inter', sans-serif;
+    font-family: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   }
   
   body {
@@ -103,7 +102,6 @@
     @apply px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-12 lg:px-10 lg:py-16;
   }
 
-  /* iOS-inspired utilities */
   .ios-card {
     @apply rounded-2xl bg-white/80 dark:bg-black/30 backdrop-blur-md shadow-sm border border-white/20 dark:border-white/5;
   }
@@ -112,13 +110,20 @@
     @apply rounded-full font-medium transition-all;
   }
   
-  /* Set-themed gradient backgrounds */
   .bg-set-gradient {
-    @apply bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10;
+    @apply bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5;
   }
   
   .bg-set-gradient-reverse {
-    @apply bg-gradient-to-l from-primary/10 via-secondary/10 to-accent/10;
+    @apply bg-gradient-to-l from-primary/5 via-secondary/5 to-accent/5;
+  }
+  
+  .ios-shadow {
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .ios-text-gradient {
+    @apply bg-gradient-to-r from-primary/90 to-secondary/90 bg-clip-text text-transparent;
   }
 }
 
@@ -141,17 +146,16 @@
   animation: gradient 2s ease infinite;
 }
 
-/* Set-themed animations */
 .pulse-soft {
-  animation: pulse-soft 3s infinite;
+  animation: pulse-soft 4s infinite;
 }
 
 @keyframes pulse-soft {
   0% {
-    box-shadow: 0 0 0 0 rgba(var(--primary), 0.4);
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0.2);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(var(--primary), 0);
+    box-shadow: 0 0 0 8px rgba(var(--primary), 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(var(--primary), 0);
