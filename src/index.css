@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,14 +16,19 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
 
-    /* More refined, classy colors */
-    --primary: 250 60% 50%; /* Deep blue-purple */
+    /* SET game colors */
+    --set-red: 350 70% 50%;
+    --set-purple: 280 60% 50%;
+    --set-green: 140 50% 45%;
+
+    /* Refined colors with SET influence */
+    --primary: 280 60% 50%; /* Purple from SET */
     --primary-foreground: 220 25% 97%;
 
-    --secondary: 340 50% 50%; /* Sophisticated red */
+    --secondary: 350 70% 50%; /* Red from SET */
     --secondary-foreground: 220 25% 97%;
 
-    --accent: 210 40% 55%; /* Subtle blue accent */
+    --accent: 140 50% 45%; /* Green from SET */
     --accent-foreground: 220 25% 97%;
 
     --muted: 220 20% 94%;
@@ -33,7 +39,7 @@
 
     --border: 220 20% 86%;
     --input: 220 20% 86%;
-    --ring: 250 60% 50%;
+    --ring: 280 60% 50%;
 
     --radius: 1.25rem; /* iOS-like rounded corners */
   }
@@ -48,14 +54,19 @@
     --popover: 224 71% 4%;
     --popover-foreground: 220 25% 97%;
 
-    /* Refined dark mode colors */
-    --primary: 250 50% 60%; /* Deep blue-purple */
+    /* SET game colors in dark mode */
+    --set-red: 350 70% 60%;
+    --set-purple: 280 60% 60%;
+    --set-green: 140 50% 55%;
+
+    /* Refined dark mode colors with SET influence */
+    --primary: 280 60% 60%; /* Purple from SET */
     --primary-foreground: 220 25% 97%;
 
-    --secondary: 340 40% 55%; /* Sophisticated red */
+    --secondary: 350 70% 60%; /* Red from SET */
     --secondary-foreground: 220 25% 97%;
 
-    --accent: 210 35% 60%; /* Subtle blue accent */
+    --accent: 140 50% 55%; /* Green from SET */
     --accent-foreground: 220 25% 97%;
 
     --muted: 215 28% 17%;
@@ -66,7 +77,7 @@
 
     --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 250 50% 60%;
+    --ring: 280 60% 60%;
   }
 }
 
@@ -111,11 +122,11 @@
   }
   
   .bg-set-gradient {
-    @apply bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5;
+    @apply bg-gradient-to-r from-set-purple/5 via-set-red/5 to-set-green/5;
   }
   
   .bg-set-gradient-reverse {
-    @apply bg-gradient-to-l from-primary/5 via-secondary/5 to-accent/5;
+    @apply bg-gradient-to-l from-set-purple/5 via-set-red/5 to-set-green/5;
   }
   
   .ios-shadow {
@@ -123,7 +134,16 @@
   }
   
   .ios-text-gradient {
-    @apply bg-gradient-to-r from-primary/90 to-secondary/90 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-set-purple via-set-red to-set-green bg-clip-text text-transparent;
+  }
+  
+  .set-card {
+    @apply relative rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg;
+  }
+  
+  .set-card-pattern {
+    @apply absolute inset-0 opacity-5 pointer-events-none;
+    background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 }
 
@@ -141,7 +161,7 @@
 }
 
 .progress-bar {
-  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)));
+  background: linear-gradient(90deg, hsl(var(--set-purple)), hsl(var(--set-red)), hsl(var(--set-green)));
   background-size: 300% 300%;
   animation: gradient 2s ease infinite;
 }
@@ -152,13 +172,13 @@
 
 @keyframes pulse-soft {
   0% {
-    box-shadow: 0 0 0 0 rgba(var(--primary), 0.2);
+    box-shadow: 0 0 0 0 rgba(var(--set-purple), 0.2);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(var(--primary), 0);
+    box-shadow: 0 0 0 8px rgba(var(--set-purple), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(var(--primary), 0);
+    box-shadow: 0 0 0 0 rgba(var(--set-purple), 0);
   }
 }
 
@@ -172,4 +192,17 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+/* Add SET card patterns */
+.set-diamond {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.set-oval {
+  border-radius: 50% / 30%;
+}
+
+.set-squiggle {
+  border-radius: 50% 20% / 10% 40%;
 }

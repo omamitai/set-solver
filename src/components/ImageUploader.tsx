@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Diamond, Circle, Triangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -66,7 +66,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       className={cn(
         "w-full max-w-xl mx-auto animate-scale-in transition-all duration-300",
         "rounded-3xl border-2 border-dashed p-6 sm:p-10 text-center",
-        "bg-background/50 backdrop-blur-sm ios-shadow",
+        "bg-background/50 backdrop-blur-sm ios-shadow relative overflow-hidden",
         dragActive 
           ? "border-primary/70 bg-primary/5 scale-[1.02]" 
           : "border-border/50 scale-100",
@@ -77,13 +77,25 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDragOver={handleDrag}
       onDrop={handleDrop}
     >
-      <div className="flex flex-col items-center justify-center gap-4 sm:gap-6">
+      <div className="set-card-pattern"></div>
+      <div className="flex flex-col items-center justify-center gap-4 sm:gap-6 relative z-10">
+        <div className="flex items-center justify-center space-x-3">
+          <div className="h-8 w-8 set-diamond bg-set-purple/20 flex items-center justify-center">
+            <Diamond className="h-4 w-4 text-set-purple" />
+          </div>
+          <div className="h-8 w-8 set-oval bg-set-red/20 flex items-center justify-center">
+            <Circle className="h-4 w-4 text-set-red" />
+          </div>
+          <div className="h-8 w-8 bg-set-green/20 flex items-center justify-center">
+            <Triangle className="h-4 w-4 text-set-green" />
+          </div>
+        </div>
         <div className="rounded-full bg-primary/10 p-4 ios-shadow">
           <ArrowUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
         </div>
         <div className="space-y-2 sm:space-y-3">
           <h3 className="text-base sm:text-xl md:text-2xl font-medium ios-text-gradient">
-            Upload your Set game image
+            Upload your SET game image
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">
             Drag and drop your image here, or tap to browse
