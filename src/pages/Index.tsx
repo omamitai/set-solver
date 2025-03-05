@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import ImageUploader from "@/components/ImageUploader";
@@ -67,9 +68,9 @@ const Index: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      <main className="flex-1 flex flex-col pt-14 pb-4 sm:pt-16 sm:pb-6">
+      <main className="flex-1 flex flex-col pt-16 pb-4 sm:pt-20 sm:pb-6">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          <div className="text-center mb-4 sm:mb-5 animate-fade-in w-full max-w-3xl">
+          <div className="text-center mb-6 sm:mb-8 animate-fade-in w-full max-w-3xl">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
               SET Game Detector
             </h1>
@@ -102,7 +103,7 @@ const Index: React.FC = () => {
           </div>
 
           <div className={cn(
-            "w-full animate-fade-in mt-16 sm:mt-32 pt-2",
+            "w-full animate-fade-in mt-10 sm:mt-20 pt-2",
             "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4 sm:before:mb-6"
           )}>
             <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-5 text-center">
