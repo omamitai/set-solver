@@ -78,13 +78,13 @@ const Index: React.FC = () => {
       <main className="flex-1 flex flex-col pt-20 sm:pt-24 pb-6 sm:pb-10">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
           {/* Title section with improved styling */}
-          <div className="text-center mb-6 sm:mb-12 animate-fade-in w-full max-w-3xl pt-4 sm:pt-8">
-            <div className="inline-flex items-center justify-center gap-2 bg-background/50 backdrop-blur-md rounded-full px-3 py-1 mb-3 sm:mb-5 border border-border/30 shadow-sm">
+          <div className="text-center mb-6 sm:mb-10 animate-fade-in w-full max-w-3xl pt-4 sm:pt-6">
+            <div className="inline-flex items-center justify-center gap-2 bg-background/50 backdrop-blur-md rounded-full px-3 py-1 mb-3 sm:mb-4 border border-border/30 shadow-sm">
               <Diamond className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-purple" />
               <Circle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-red" />
               <Triangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-green" />
             </div>
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3 sm:mb-5 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3 sm:mb-4 leading-tight">
               SET Game Detector
             </h1>
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-4">
@@ -100,7 +100,7 @@ const Index: React.FC = () => {
             <div className="hidden sm:block">
               <button
                 onClick={scrollToHow}
-                className="mt-4 flex flex-col items-center gap-1 text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors mx-auto"
+                className="mt-3 flex flex-col items-center gap-1 text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors mx-auto"
                 aria-label="Learn how it works"
               >
                 <span>Learn how it works</span>
@@ -109,7 +109,7 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* Main content area with better spacing for desktop */}
+          {/* Main content area */}
           <div className="w-full mb-14 sm:mb-16 bg-background/30 backdrop-blur-sm rounded-2xl border border-border/30 shadow-md p-5 sm:p-8 relative overflow-hidden">
             <div className="set-card-pattern opacity-10"></div>
             <div className="relative z-10">
@@ -130,15 +130,15 @@ const Index: React.FC = () => {
             </div>
           </div>
 
-          {/* How It Works section - properly pushed below the fold */}
+          {/* How It Works section */}
           <div 
             id="how-it-works"
             className={cn(
-              "w-full animate-fade-in mt-16 sm:mt-24 pt-4",
-              "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-8 sm:before:mb-10"
+              "w-full animate-fade-in mt-12 sm:mt-20 pt-4",
+              "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-6 sm:before:mb-8"
             )}
           >
-            <h2 className="text-lg sm:text-2xl font-semibold mb-6 sm:mb-8 text-center">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-6 sm:mb-8 text-center">
               How It Works
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
@@ -163,17 +163,17 @@ const Index: React.FC = () => {
                   <div className="set-card-pattern opacity-20"></div>
                   <div className="flex flex-col items-center text-center relative z-10">
                     <div className={cn(
-                      "w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-lg shadow-sm mb-3 sm:mb-4",
+                      "w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg shadow-sm mb-3 sm:mb-4",
                       step.icon === "diamond" ? "bg-set-purple/15 set-diamond" : 
                       step.icon === "circle" ? "bg-set-red/15 set-oval" : 
                       "bg-set-green/15"
                     )}>
                       {step.icon === "diamond" ? (
-                        <Diamond className="h-4 w-4 sm:h-6 sm:w-6 text-set-purple opacity-80" />
+                        <Diamond className="h-4 w-4 sm:h-5 sm:w-5 text-set-purple opacity-80" />
                       ) : step.icon === "circle" ? (
-                        <Circle className="h-4 w-4 sm:h-6 sm:w-6 text-set-red opacity-80" />
+                        <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-set-red opacity-80" />
                       ) : (
-                        <Triangle className="h-4 w-4 sm:h-6 sm:w-6 text-set-green opacity-80" />
+                        <Triangle className="h-4 w-4 sm:h-5 sm:w-5 text-set-green opacity-80" />
                       )}
                     </div>
                     <h3 className="text-base sm:text-lg font-medium mb-2 sm:mb-3">
