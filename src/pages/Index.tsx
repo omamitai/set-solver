@@ -80,84 +80,85 @@ const Index: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      {/* Reduced top padding to fit everything on screen without scrolling */}
-      <main className="flex-1 pt-12 sm:pt-16 section-padding">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-4 sm:mb-6 animate-fade-in px-4">
-            <div className="flex items-center justify-center gap-3 mb-2">
-              <Diamond className="h-5 w-5 text-set-purple opacity-80" />
-              <Circle className="h-5 w-5 text-set-red opacity-80" />
-              <Triangle className="h-5 w-5 text-set-green opacity-80" />
+      <main className="flex-1 flex flex-col pt-6 sm:pt-8 pb-12 section-padding">
+        {/* Header and title section - more compact */}
+        <div className="text-center mb-6 animate-fade-in px-4">
+          <div className="flex items-center justify-center gap-3 mb-1">
+            <Diamond className="h-5 w-5 text-set-purple opacity-80" />
+            <Circle className="h-5 w-5 text-set-red opacity-80" />
+            <Triangle className="h-5 w-5 text-set-green opacity-80" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1.5 leading-tight">
+            SET Game Detector
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            Upload an image of your SET card game layout and we'll identify all valid sets for you.
+          </p>
+          
+          {isMockMode && (
+            <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-md mx-auto text-xs">
+              ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false in your .env file to use the real AWS backend.
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 sm:mb-3 leading-tight">
-              SET Game Detector
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
-              Upload an image of your SET card game layout and we'll identify all valid sets for you.
-            </p>
-            
-            {isMockMode && (
-              <div className="mt-2 p-2 bg-yellow-100 text-yellow-800 rounded-lg max-w-xl mx-auto text-xs sm:text-sm">
-                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false in your .env file to use the real AWS backend.
-              </div>
+          )}
+        </div>
+
+        {/* Main content - adjusted to ensure uploader is visible without scrolling */}
+        <div className="flex-1 flex flex-col justify-start">
+          <div className="mb-16 sm:mb-20"> {/* Added margin to push "How It Works" below the fold */}
+            {!imageUrl ? (
+              <ImageUploader 
+                onImageSelected={handleImageSelected} 
+                isProcessing={isProcessing}
+              />
+            ) : (
+              <Results 
+                imageUrl={imageUrl}
+                processedImageUrl={processedImageUrl}
+                isProcessing={isProcessing}
+                onReset={handleReset}
+                foundSets={foundSets}
+              />
             )}
           </div>
 
-          {!imageUrl ? (
-            <ImageUploader 
-              onImageSelected={handleImageSelected} 
-              isProcessing={isProcessing}
-            />
-          ) : (
-            <Results 
-              imageUrl={imageUrl}
-              processedImageUrl={processedImageUrl}
-              isProcessing={isProcessing}
-              onReset={handleReset}
-              foundSets={foundSets}
-            />
-          )}
-
-          {/* Only show How It Works section when there's room (no image processing happening) */}
-          {!imageUrl && (
-            <div className="mt-8 sm:mt-10 animate-fade-in px-4">
-              <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-center">
-                How It Works
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
-                {[
-                  {
-                    title: "Upload Image",
-                    description: "Take a photo of your SET game layout and upload it.",
-                    icon: "diamond"
-                  },
-                  {
-                    title: "AI Detection",
-                    description: "Our AI analyzes the image to identify all cards and their attributes.",
-                    icon: "circle"
-                  },
-                  {
-                    title: "View Results",
-                    description: "See all valid sets highlighted directly on your image.",
-                    icon: "triangle"
-                  }
-                ].map((step, index) => (
-                  <div key={index} className="rounded-2xl ios-card hover-lift p-4 sm:p-6 relative overflow-hidden">
-                    <div className="set-card-pattern"></div>
-                    <div className="flex flex-col items-center text-center relative z-10">
-                      <SetIcon type={step.icon as 'diamond' | 'circle' | 'triangle'} />
-                      <h3 className="text-base sm:text-lg font-medium mt-3 mb-1 sm:mb-2">
-                        {step.title}
-                      </h3>
-                      <p className="text-muted-foreground text-xs sm:text-sm">
-                        {step.description}
-                      </p>
-                    </div>
+          {/* How It Works section - will be below the fold */}
+          <div className="animate-fade-in px-4 mt-auto">
+            <h2 className="text-xl font-semibold mb-4 text-center">
+              How It Works
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+              {[
+                {
+                  title: "Upload Image",
+                  description: "Take a photo of your SET game layout and upload it.",
+                  icon: "diamond"
+                },
+                {
+                  title: "AI Detection",
+                  description: "Our AI analyzes the image to identify all cards and their attributes.",
+                  icon: "circle"
+                },
+                {
+                  title: "View Results",
+                  description: "See all valid sets highlighted directly on your image.",
+                  icon: "triangle"
+                }
+              ].map((step, index) => (
+                <div key={index} className="rounded-2xl ios-card hover-lift p-3 sm:p-4 relative overflow-hidden">
+                  <div className="set-card-pattern"></div>
+                  <div className="flex flex-col items-center text-center relative z-10">
+                    <SetIcon type={step.icon as 'diamond' | 'circle' | 'triangle'} />
+                    <h3 className="text-base font-medium mt-2 mb-1">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {step.description}
+                    </p>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
         </div>
       </main>
 
