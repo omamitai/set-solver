@@ -1,4 +1,5 @@
 
+
 # SET Game Detector
 
 An elegant application that detects valid SET combinations from images of the SET card game using computer vision and machine learning.
@@ -72,3 +73,4 @@ To work on the frontend React application:
 ## License
 
 MIT
+
