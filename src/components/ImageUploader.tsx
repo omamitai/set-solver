@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Diamond, Circle, Triangle } from "lucide-react";
@@ -64,12 +63,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
   return (
     <div 
       className={cn(
-        "w-full max-w-sm sm:max-w-md mx-auto animate-scale-in transition-all duration-300",
-        "rounded-2xl border-2 border-dashed p-5 text-center",
-        "ios-card relative overflow-hidden",
+        "w-full max-w-sm mx-auto animate-scale-in transition-all duration-300",
+        "rounded-2xl border-2 border-dashed p-6 text-center",
+        "bg-white/80 backdrop-blur-sm shadow-lg",
         dragActive 
-          ? "border-primary/60 bg-primary/10 scale-[1.02] shadow-lg" 
-          : "border-border/50 scale-100 shadow-md",
+          ? "border-primary/60 bg-primary/5 scale-[1.02]" 
+          : "border-border/50 scale-100",
         isProcessing ? "opacity-50 pointer-events-none" : "opacity-100"
       )}
       onDragEnter={handleDrag}
@@ -77,48 +76,37 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDragOver={handleDrag}
       onDrop={handleDrop}
     >
-      <div className="set-card-pattern opacity-30"></div>
-      <div className="flex flex-col items-center justify-center gap-3 relative z-10">
-        {/* Compact icon row */}
-        <div className="flex items-center justify-center space-x-2 mb-1">
-          <div className="h-4 w-4 sm:h-5 sm:w-5 set-diamond bg-set-purple/20 flex items-center justify-center rounded-md shadow-sm">
-            <Diamond className="h-2 w-2 sm:h-2.5 sm:w-2.5 text-set-purple" />
-          </div>
-          <div className="h-4 w-4 sm:h-5 sm:w-5 set-oval bg-set-red/20 flex items-center justify-center rounded-md shadow-sm">
-            <Circle className="h-2 w-2 sm:h-2.5 sm:w-2.5 text-set-red" />
-          </div>
-          <div className="h-4 w-4 sm:h-5 sm:w-5 bg-set-green/20 flex items-center justify-center rounded-md shadow-sm">
-            <Triangle className="h-2 w-2 sm:h-2.5 sm:w-2.5 text-set-green" />
-          </div>
+      <div className="flex flex-col items-center justify-center gap-4">
+        <div className="flex items-center justify-center space-x-2">
+          <Diamond className="h-4 w-4 sm:h-5 sm:w-5 text-set-purple opacity-70" />
+          <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-set-red opacity-70" />
+          <Triangle className="h-4 w-4 sm:h-5 sm:w-5 text-set-green opacity-70" />
         </div>
         
-        {/* Upload arrow and text */}
-        <div className="flex flex-col items-center space-y-2">
-          <div className="rounded-full bg-primary/10 p-2 shadow-sm pulse-soft">
-            <ArrowUp className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+        <div className="flex flex-col items-center gap-3">
+          <div className="rounded-full bg-primary/10 p-2.5 shadow-sm pulse-soft">
+            <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
           
-          <div className="space-y-1">
-            <h3 className="text-sm sm:text-base font-semibold">
+          <div className="space-y-1.5">
+            <h3 className="text-base sm:text-lg font-semibold">
               Upload your SET game image
             </h3>
-            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+            <p className="text-sm text-muted-foreground">
               Drag and drop your image here, or tap to browse
             </p>
           </div>
         </div>
         
-        {/* Button */}
         <Button
           onClick={handleButtonClick}
-          className="ios-btn set-btn-purple font-medium px-4 py-1 h-auto text-xs sm:text-sm mt-1"
+          className="ios-btn set-btn-purple font-medium"
           disabled={isProcessing}
         >
           Select Image
         </Button>
         
-        {/* File info */}
-        <p className="text-[10px] sm:text-xs text-muted-foreground mt-0">
+        <p className="text-xs text-muted-foreground">
           Supports PNG, JPG, JPEG (max 10MB)
         </p>
       </div>
