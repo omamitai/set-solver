@@ -14,21 +14,21 @@ An elegant application that detects valid SET combinations from images of the SE
 ## Technologies Used
 
 - **Frontend**: React, Tailwind CSS, Lucide icons
-- **Backend**: Python, Streamlit
+- **Backend**: Python, Gradio
 - **ML/CV**: TensorFlow, PyTorch, OpenCV, YOLO
 
 ## Deployment
 
-### Streamlit Deployment
+### Gradio Deployment
 
 1. Clone this repository
 2. Install the required Python packages:
    ```
-   pip install streamlit numpy opencv-python pandas tensorflow torch ultralytics pillow
+   pip install gradio numpy opencv-python pandas tensorflow torch ultralytics pillow
    ```
-3. Run the Streamlit app:
+3. Run the Gradio app:
    ```
-   streamlit run app.py
+   python app.py
    ```
 
 ### Setting up the models
@@ -61,6 +61,13 @@ To work on the frontend React application:
    ```
    npm run dev
    ```
+
+## Design Principles
+
+- **iOS-inspired**: Clean, minimal interface with frosted glass effects and subtle shadows
+- **SET-themed**: Color palette based on the classic SET game colors (purple, red, green)
+- **Responsive**: Fully functional across all device sizes
+- **Accessible**: High contrast elements and readable text
 
 ## License
 

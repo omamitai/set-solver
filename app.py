@@ -1,5 +1,5 @@
 
-import streamlit as st
+import gradio as gr
 import numpy as np
 import cv2
 import pandas as pd
@@ -17,127 +17,9 @@ import base64
 from PIL import Image
 import io
 
-# Page config
-st.set_page_config(
-    page_title="SET Game Detector",
-    page_icon="🎴",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-
-# Custom CSS for iOS-like styling
-def load_css():
-    css = """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
-    
-    body {
-        font-family: 'SF Pro Display', sans-serif;
-        background-color: #f8f9fa;
-    }
-    
-    .stApp {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    
-    h1, h2, h3 {
-        font-family: 'SF Pro Display', sans-serif;
-        font-weight: 600;
-    }
-    
-    .main-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    
-    .card {
-        border-radius: 16px;
-        padding: 1.5rem;
-        background-color: white;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        margin-bottom: 1.5rem;
-    }
-    
-    .set-purple {
-        color: #8B5CF6;
-    }
-    
-    .set-red {
-        color: #EF4444;
-    }
-    
-    .set-green {
-        color: #10B981;
-    }
-    
-    .step-card {
-        border-radius: 12px;
-        padding: 1.2rem;
-        text-align: center;
-        background-color: white;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        height: 100%;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .step-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    
-    .footer {
-        text-align: center;
-        margin-top: 3rem;
-        opacity: 0.7;
-        font-size: 0.85rem;
-    }
-    
-    .stButton button {
-        border-radius: 50px;
-        padding: 0.5rem 2rem;
-        background-color: #8B5CF6;
-        color: white;
-        font-weight: 500;
-        border: none;
-        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
-        transition: all 0.3s ease;
-    }
-    
-    .stButton button:hover {
-        background-color: #7C3AED;
-        box-shadow: 0 6px 15px rgba(139, 92, 246, 0.35);
-        transform: translateY(-2px);
-    }
-    
-    /* Hide Streamlit branding */
-    #MainMenu, footer, header {
-        visibility: hidden;
-    }
-    
-    /* Make file uploader look nicer */
-    .stFileUploader {
-        padding: 2rem;
-        border-radius: 16px;
-        border: 2px dashed rgba(139, 92, 246, 0.3);
-        background-color: rgba(139, 92, 246, 0.05);
-    }
-    
-    /* Custom progress bar */
-    .stProgress > div > div > div {
-        background-color: #8B5CF6;
-    }
-    </style>
-    """
-    st.markdown(css, unsafe_allow_html=True)
-
-load_css()
-
 # Model loading with caching
-@st.cache_resource
 def load_models():
-    # For deployment, you'd make sure these paths are correct
-    # or use environment variables
+    """Load all required models for SET detection"""
     base_dir = Path("models")
     
     # Create directories if they don't exist 
@@ -205,10 +87,24 @@ def load_models():
     detector_shape = DummyYOLO()
     detector_card = DummyYOLO()
     
-    # For demo purposes, notify user that we're using dummy models
-    if not st.session_state.get('models_loaded_notice_shown', False):
-        st.info("⚠️ Using placeholder models for demonstration. In production, replace with your trained models.", icon="ℹ️")
-        st.session_state.models_loaded_notice_shown = True
+    # For real deployment, uncomment these lines and remove the dummy models:
+    # char_path = base_dir / "Characteristics" / "11022025"
+    # shape_path = base_dir / "Shape" / "15052024" 
+    # card_path = base_dir / "Card" / "16042024"
+    
+    # # Load classification models
+    # model_shape = load_model(str(char_path / "shape_model.keras"))
+    # model_fill = load_model(str(char_path / "fill_model.keras"))
+    
+    # # Load detection models
+    # detector_shape = YOLO(str(shape_path / "best.pt"))
+    # detector_shape.conf = 0.5
+    # detector_card = YOLO(str(card_path / "best.pt"))
+    # detector_card.conf = 0.5
+    
+    # if torch.cuda.is_available():
+    #     detector_card.to("cuda")
+    #     detector_shape.to("cuda")
         
     return model_shape, model_fill, detector_card, detector_shape
 
@@ -364,27 +260,125 @@ def identify_sets(image):
     else:
         return [], restore_orientation(processed, was_rotated)
 
-# Helper function to convert image formats
-def pil_to_cv2(pil_img):
-    """Convert PIL Image to CV2 format (numpy array)"""
-    return cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+# Helper functions for Gradio
+def process_image(input_img):
+    # Convert from PIL to OpenCV format
+    img_array = np.array(input_img)
+    # Convert RGB to BGR (OpenCV format)
+    cv_image = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+    
+    # For demo purposes, simulate processing time
+    time.sleep(2)
+    
+    # Process the image to find sets
+    found_sets, result_image = identify_sets(cv_image)
+    
+    # Convert back to RGB for display
+    result_rgb = cv2.cvtColor(result_image, cv2.COLOR_BGR2RGB)
+    
+    # Create a formatted message about the found sets
+    if found_sets:
+        message = f"Found {len(found_sets)} valid SET(s)!\n\n"
+        
+        for i, set_info in enumerate(found_sets):
+            cards_info = []
+            for card in set_info['cards']:
+                card_str = f"{card['Count']} {card['Color']} {card['Fill']} {card['Shape']}"
+                cards_info.append(card_str)
+            
+            message += f"SET {i+1}: {' + '.join(cards_info)}\n"
+    else:
+        message = "No valid SETs found in this image."
+    
+    return Image.fromarray(result_rgb), message
 
-def cv2_to_pil(cv_img):
-    """Convert CV2 image to PIL format"""
-    return Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
+# Create the Gradio interface with enhanced styling
+def create_interface():
+    # Custom CSS for SET-themed styling
+    css = """
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
 
-def get_image_download_link(img, filename, text):
-    """Generate a link to download a PIL image"""
-    buffered = io.BytesIO()
-    img.save(buffered, format="JPEG", quality=85)
-    img_str = base64.b64encode(buffered.getvalue()).decode()
-    href = f'<a href="data:image/jpeg;base64,{img_str}" download="{filename}" style="display: inline-block; padding: 0.5rem 1.5rem; color: white; background-color: #8B5CF6; text-decoration: none; border-radius: 9999px; font-weight: 500; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25); margin-top: 1rem; text-align: center; transition: all 0.3s ease;">{text}</a>'
-    return href
-
-# Main Streamlit app
-def main():
-    # Header with SET game colors
-    st.markdown("""
+    body {
+        font-family: 'SF Pro Display', sans-serif;
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(240,240,245,0.9) 100%);
+    }
+    
+    .gradio-container {
+        max-width: 1200px !important;
+    }
+    
+    .main-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    /* SET game colors */
+    .set-purple { color: #8B5CF6; }
+    .set-red { color: #EF4444; }
+    .set-green { color: #10B981; }
+    
+    /* iOS-style elements */
+    .ios-card {
+        border-radius: 16px;
+        padding: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 8px 32px -10px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .ios-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.25);
+    }
+    
+    /* Custom file upload area */
+    .upload-btn {
+        background-color: rgba(139, 92, 246, 0.15);
+        color: #8B5CF6;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 50px;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .upload-btn:hover {
+        background-color: rgba(139, 92, 246, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    /* Section styling */
+    .section-title {
+        text-align: center;
+        margin: 2rem 0 1rem;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+    
+    /* Enhanced output area */
+    .result-area {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px -10px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    /* Footer */
+    .footer {
+        text-align: center;
+        margin-top: 3rem;
+        opacity: 0.7;
+        font-size: 0.85rem;
+        padding: 1rem 0;
+    }
+    """
+    
+    # Header HTML
+    header_html = """
     <div class="main-header">
         <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px;">
             <span class="set-purple">◆</span>
@@ -393,129 +387,42 @@ def main():
         </div>
         <h1>SET Game Detector</h1>
         <p style="color: #6B7280; max-width: 600px; margin: 10px auto;">
-            Upload an image of your SET card game layout and we'll identify all valid sets for you
+            Upload an image of your SET card game layout and our AI will identify all valid sets for you
         </p>
     </div>
-    """, unsafe_allow_html=True)
+    """
     
-    # Create columns for steps
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("""
-        <div class="step-card">
+    # Steps HTML
+    steps_html = """
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0;">
+        <div class="ios-card">
             <div style="color: #8B5CF6; font-size: 2rem; margin-bottom: 10px;">◆</div>
             <h3>Upload Image</h3>
             <p style="color: #6B7280; font-size: 0.9rem;">
                 Take a photo of your SET game layout and upload it.
             </p>
         </div>
-        """, unsafe_allow_html=True)
         
-    with col2:
-        st.markdown("""
-        <div class="step-card">
+        <div class="ios-card">
             <div style="color: #EF4444; font-size: 2rem; margin-bottom: 10px;">●</div>
             <h3>AI Detection</h3>
             <p style="color: #6B7280; font-size: 0.9rem;">
                 Our AI analyzes the image to identify all cards and their attributes.
             </p>
         </div>
-        """, unsafe_allow_html=True)
         
-    with col3:
-        st.markdown("""
-        <div class="step-card">
+        <div class="ios-card">
             <div style="color: #10B981; font-size: 2rem; margin-bottom: 10px;">▲</div>
             <h3>View Results</h3>
             <p style="color: #6B7280; font-size: 0.9rem;">
                 See all valid sets highlighted directly on your image.
             </p>
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+    """
     
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Main section with card
-    st.markdown("""
-    <div class="card">
-        <h2 style="margin-bottom: 20px; text-align: center;">Upload SET Game Image</h2>
-    """, unsafe_allow_html=True)
-    
-    # Image upload
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-    
-    if uploaded_file is not None:
-        # Display the uploaded image
-        image = Image.open(uploaded_file)
-        
-        # Create two columns for before/after
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("<h3 style='text-align: center;'>Uploaded Image</h3>", unsafe_allow_html=True)
-            st.image(image, caption="Your uploaded image", use_column_width=True)
-        
-        # Process button
-        if st.button("Detect SETs"):
-            with st.spinner('Processing image...'):
-                # Show progress
-                progress_bar = st.progress(0)
-                for i in range(100):
-                    time.sleep(0.02)  # Simulate processing time
-                    progress_bar.progress(i + 1)
-                
-                # Convert PIL to CV2 for processing
-                cv_image = pil_to_cv2(image)
-                
-                # Process the image to find sets
-                found_sets, result_image = identify_sets(cv_image)
-                
-                # Convert back to PIL for display
-                result_pil = cv2_to_pil(result_image)
-                
-                # Store results in session state
-                st.session_state.found_sets = found_sets
-                st.session_state.result_image = result_pil
-            
-            # Display results
-            with col2:
-                st.markdown("<h3 style='text-align: center;'>Results</h3>", unsafe_allow_html=True)
-                st.image(st.session_state.result_image, caption=f"Found {len(st.session_state.found_sets)} sets", use_column_width=True)
-                
-                # Download link for processed image
-                st.markdown(
-                    get_image_download_link(
-                        st.session_state.result_image, 
-                        "set_game_results.jpg", 
-                        "Download Processed Image"
-                    ), 
-                    unsafe_allow_html=True
-                )
-            
-            # Show details about the found sets
-            if len(st.session_state.found_sets) > 0:
-                st.markdown("<h3 style='text-align: center; margin-top: 20px;'>Found SETs</h3>", unsafe_allow_html=True)
-                
-                for i, set_info in enumerate(st.session_state.found_sets):
-                    set_details = []
-                    
-                    for card in set_info['cards']:
-                        card_str = f"{card['Count']} {card['Color']} {card['Fill']} {card['Shape']}"
-                        set_details.append(card_str)
-                    
-                    st.markdown(f"""
-                    <div style="background-color: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
-                        <strong>SET {i+1}:</strong> {' + '.join(set_details)}
-                    </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.info("No valid SETs found in this image.")
-    
-    st.markdown("</div>", unsafe_allow_html=True)  # Close the card div
-    
-    # Footer
-    st.markdown("""
+    # Footer HTML
+    footer_html = """
     <div class="footer">
         <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 8px;">
             <span class="set-purple">◆</span>
@@ -524,7 +431,37 @@ def main():
         </div>
         <p>SET Game Detector © 2024</p>
     </div>
-    """, unsafe_allow_html=True)
+    """
+    
+    # Create the interface
+    with gr.Blocks(css=css) as demo:
+        gr.HTML(header_html)
+        gr.HTML(steps_html)
+        
+        with gr.Row():
+            with gr.Column():
+                input_image = gr.Image(type="pil", label="Upload SET Game Image")
+                submit_btn = gr.Button("Detect SETs", elem_classes=["upload-btn"])
+            
+            with gr.Column():
+                output_image = gr.Image(type="pil", label="Detected SETs")
+                output_text = gr.Textbox(label="Results", lines=5)
+        
+        submit_btn.click(
+            fn=process_image,
+            inputs=[input_image],
+            outputs=[output_image, output_text]
+        )
+        
+        gr.HTML(footer_html)
+    
+    return demo
 
+# Launch the app
 if __name__ == "__main__":
-    main()
+    # Load models at startup to avoid first-request delay
+    _ = load_models()
+    
+    # Create and launch the interface
+    demo = create_interface()
+    demo.launch()
