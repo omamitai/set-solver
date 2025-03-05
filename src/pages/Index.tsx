@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import ImageUploader from "@/components/ImageUploader";
@@ -70,13 +69,7 @@ const Index: React.FC = () => {
       
       <main className="flex-1 flex flex-col pt-14 pb-4 sm:pt-16 sm:pb-6">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          {/* Title section - Increased font size and improved spacing */}
           <div className="text-center mb-4 sm:mb-5 animate-fade-in w-full max-w-3xl">
-            <div className="inline-flex items-center justify-center gap-2 bg-background/40 backdrop-blur-md rounded-full px-3 py-1 mb-2 border border-border/20 shadow-sm">
-              <Diamond className="h-3.5 w-3.5 text-set-purple" />
-              <Circle className="h-3.5 w-3.5 text-set-red" />
-              <Triangle className="h-3.5 w-3.5 text-set-green" />
-            </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
               SET Game Detector
             </h1>
@@ -91,7 +84,6 @@ const Index: React.FC = () => {
             )}
           </div>
 
-          {/* Main content area - Make uploader fit in initial viewport */}
           <div className="w-full">
             {!imageUrl ? (
               <ImageUploader 
@@ -109,7 +101,6 @@ const Index: React.FC = () => {
             )}
           </div>
 
-          {/* How It Works section - Moved further down to be below the fold */}
           <div className={cn(
             "w-full animate-fade-in mt-16 sm:mt-32 pt-2",
             "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4 sm:before:mb-6"

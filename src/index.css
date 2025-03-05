@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,15 +6,15 @@
 
 @layer base {
   :root {
-    --background: 220 25% 94%;
-    --foreground: 224 71% 4%;
+    /* Softer light mode with warmer tones */
+    --background: 30 25% 94%;
+    --foreground: 220 15% 20%;
 
-    /* Softer light mode colors */
-    --card: 220 25% 97%;
-    --card-foreground: 224 71% 4%;
+    --card: 30 25% 97%;
+    --card-foreground: 220 15% 20%;
 
-    --popover: 220 25% 97%;
-    --popover-foreground: 224 71% 4%;
+    --popover: 30 25% 97%;
+    --popover-foreground: 220 15% 20%;
 
     /* SET game colors - more vivid but still elegant */
     --set-red: 350 65% 55%;
@@ -24,28 +23,29 @@
 
     /* Refined colors with SET influence */
     --primary: 280 65% 55%; /* Purple from SET */
-    --primary-foreground: 220 25% 97%;
+    --primary-foreground: 30 25% 97%;
 
     --secondary: 350 65% 55%; /* Red from SET */
-    --secondary-foreground: 220 25% 97%;
+    --secondary-foreground: 30 25% 97%;
 
     --accent: 140 45% 50%; /* Green from SET */
-    --accent-foreground: 220 25% 97%;
+    --accent-foreground: 30 25% 97%;
 
-    --muted: 220 20% 90%;
+    --muted: 30 20% 90%;
     --muted-foreground: 220 10% 40%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 30 40% 98%;
 
-    --border: 220 20% 82%;
-    --input: 220 20% 82%;
+    --border: 30 20% 82%;
+    --input: 30 20% 82%;
     --ring: 280 65% 55%;
 
     --radius: 1.25rem;
   }
 
   .dark {
+    /* Keep dark mode as is */
     --background: 224 71% 4%;
     --foreground: 220 25% 97%;
 
