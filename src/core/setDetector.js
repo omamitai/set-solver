@@ -33,25 +33,26 @@ const mockDetectSets = async (imageFile) => {
   }
 };
 
-// AWS backend implementation
-const awsDetectSets = async (imageFile) => {
+// EC2 backend implementation
+const ec2DetectSets = async (imageFile) => {
   const formData = new FormData();
-  formData.append('image', imageFile);
+  formData.append('file', imageFile);
   
   try {
-    // Get the AWS API Gateway endpoint from environment variables
-    const endpoint = process.env.REACT_APP_AWS_API_ENDPOINT;
+    // Get the EC2 server endpoint from environment variables
+    const endpoint = process.env.REACT_APP_EC2_SERVER_URL;
     
-    if (!endpoint || endpoint === "https://your-api-gateway-id.execute-api.your-region.amazonaws.com/prod/detect-sets") {
-      console.error("AWS API endpoint not correctly configured in environment variables:", endpoint);
-      throw new Error("API endpoint not correctly configured - still has placeholder value");
+    if (!endpoint || endpoint === "http://your-ec2-instance-public-dns:8000/detect-sets") {
+      console.error("EC2 server URL not correctly configured in environment variables:", endpoint);
+      throw new Error("EC2 server URL not correctly configured - still has placeholder value");
     }
     
-    console.log("Calling AWS endpoint:", endpoint);
+    console.log("Calling EC2 server:", endpoint);
     
     const response = await fetch(endpoint, {
       method: 'POST',
-      body: formData
+      body: formData,
+      // No need to set Content-Type as it's automatically set with FormData
     });
     
     if (!response.ok) {
@@ -61,17 +62,17 @@ const awsDetectSets = async (imageFile) => {
     }
     
     const result = await response.json();
-    console.log("AWS API response:", result);
+    console.log("EC2 server response:", result);
     
     return result;
   } catch (error) {
-    console.error("Error calling AWS SET detection API:", error);
+    console.error("Error calling EC2 SET detection API:", error);
     return {
       success: false,
-      error: `Failed to connect to SET detection service: ${error.message}. Please check your API configuration.`
+      error: `Failed to connect to SET detection service: ${error.message}. Please check your EC2 server configuration.`
     };
   }
 };
 
 // Export the appropriate function based on configuration
-export const detectSets = USE_MOCK_DATA ? mockDetectSets : awsDetectSets;
+export const detectSets = USE_MOCK_DATA ? mockDetectSets : ec2DetectSets;
