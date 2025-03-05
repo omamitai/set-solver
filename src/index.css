@@ -7,85 +7,83 @@
 
 @layer base {
   :root {
-    /* More pleasant light mode palette with enhanced colors */
-    --background: 210 25% 96%;
-    --foreground: 224 50% 15%;
+    --background: 220 25% 97%;
+    --foreground: 224 71% 4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 224 50% 15%;
+    --card-foreground: 224 71% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 50% 15%;
+    --popover-foreground: 224 71% 4%;
 
-    /* SET game colors - elegant and vibrant */
-    --set-red: 350 70% 60%;
-    --set-purple: 280 70% 60%;
-    --set-green: 140 55% 50%;
+    /* SET game colors - more vivid but still elegant */
+    --set-red: 350 65% 55%;
+    --set-purple: 280 65% 55%;
+    --set-green: 140 45% 50%;
 
     /* Refined colors with SET influence */
-    --primary: 280 70% 60%; /* Purple from SET */
-    --primary-foreground: 0 0% 100%;
+    --primary: 280 65% 55%; /* Purple from SET */
+    --primary-foreground: 220 25% 97%;
 
-    --secondary: 350 70% 60%; /* Red from SET */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 350 65% 55%; /* Red from SET */
+    --secondary-foreground: 220 25% 97%;
 
-    --accent: 140 55% 50%; /* Green from SET */
-    --accent-foreground: 0 0% 100%;
+    --accent: 140 45% 50%; /* Green from SET */
+    --accent-foreground: 220 25% 97%;
 
-    --muted: 220 20% 92%;
-    --muted-foreground: 220 15% 40%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 10% 45%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 220 20% 86%;
     --input: 220 20% 86%;
-    --ring: 280 70% 60%;
+    --ring: 280 65% 55%;
 
-    --radius: 1rem; /* iOS-like rounded corners */
+    --radius: 1.25rem; /* iOS-like rounded corners */
   }
 
   .dark {
-    /* Refined dark mode with better contrast */
-    --background: 224 60% 6%;
+    --background: 224 71% 4%;
     --foreground: 220 25% 97%;
 
-    --card: 224 60% 6%;
+    --card: 224 71% 4%;
     --card-foreground: 220 25% 97%;
 
-    --popover: 224 60% 6%;
+    --popover: 224 71% 4%;
     --popover-foreground: 220 25% 97%;
 
     /* SET game colors in dark mode - more vivid */
-    --set-red: 350 75% 65%;
-    --set-purple: 280 75% 65%;
-    --set-green: 140 60% 55%;
+    --set-red: 350 70% 60%;
+    --set-purple: 280 70% 60%;
+    --set-green: 140 55% 55%;
 
     /* Refined dark mode colors with SET influence */
-    --primary: 280 75% 65%; /* Purple from SET */
-    --primary-foreground: 0 0% 100%;
+    --primary: 280 70% 60%; /* Purple from SET */
+    --primary-foreground: 220 25% 97%;
 
-    --secondary: 350 75% 65%; /* Red from SET */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 350 70% 60%; /* Red from SET */
+    --secondary-foreground: 220 25% 97%;
 
-    --accent: 140 60% 55%; /* Green from SET */
-    --accent-foreground: 0 0% 100%;
+    --accent: 140 55% 55%; /* Green from SET */
+    --accent-foreground: 220 25% 97%;
 
     --muted: 215 28% 17%;
-    --muted-foreground: 217 25% 70%;
+    --muted-foreground: 217 25% 65%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 280 75% 65%;
+    --ring: 280 70% 60%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border selection:bg-primary/20 selection:text-primary;
+    @apply border-border selection:bg-primary/15 selection:text-primary;
   }
   
   html {
@@ -96,14 +94,12 @@
   body {
     @apply bg-background text-foreground transition-colors duration-300;
     background-image: 
-      radial-gradient(at 80% 20%, rgba(139, 92, 246, 0.18) 0px, transparent 60%),
-      radial-gradient(at 20% 80%, rgba(239, 68, 68, 0.18) 0px, transparent 60%),
-      radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.18) 0px, transparent 60%);
+      radial-gradient(at 80% 20%, rgba(139, 92, 246, 0.05) 0px, transparent 60%),
+      radial-gradient(at 20% 80%, rgba(239, 68, 68, 0.05) 0px, transparent 60%),
+      radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.05) 0px, transparent 60%);
     background-attachment: fixed;
   }
 }
-
-/* ... keep existing code (glass and text-balance utility classes) */
 
 @layer utilities {
   .glass {
@@ -123,7 +119,7 @@
   }
 
   .ios-card {
-    @apply rounded-2xl bg-white/90 dark:bg-black/60 backdrop-blur-md shadow-md border border-white/40 dark:border-white/10;
+    @apply rounded-2xl bg-white/95 dark:bg-black/60 backdrop-blur-md shadow-md border border-white/40 dark:border-white/10;
   }
   
   .ios-button {
@@ -131,13 +127,13 @@
   }
   
   .bg-set-gradient {
-    background: linear-gradient(135deg, rgba(240, 240, 250, 0.8) 0%, rgba(230, 230, 245, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(240,240,245,0.9) 100%);
     background-size: 200% 200%;
     animation: gradientMove 15s ease infinite;
   }
   
   .dark .bg-set-gradient {
-    background: linear-gradient(135deg, rgba(30,30,40,0.8) 0%, rgba(20,20,30,0.9) 100%);
+    background: linear-gradient(135deg, rgba(30,30,35,0.8) 0%, rgba(20,20,25,0.9) 100%);
     background-size: 200% 200%;
     animation: gradientMove 15s ease infinite;
   }
@@ -163,13 +159,11 @@
   .set-card-pattern {
     @apply absolute inset-0 opacity-15 pointer-events-none;
     background-image: 
-      radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.3) 0%, transparent 40%),
-      radial-gradient(circle at 70% 60%, rgba(239, 68, 68, 0.3) 0%, transparent 40%),
-      radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.3) 0%, transparent 40%);
+      radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.2) 0%, transparent 40%),
+      radial-gradient(circle at 70% 60%, rgba(239, 68, 68, 0.2) 0%, transparent 40%),
+      radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.2) 0%, transparent 40%);
   }
 }
-
-/* ... keep existing code (card shadows, animations, and SET card patterns) */
 
 .card-shadow {
   box-shadow: 0 12px 35px -10px rgba(0,0,0,0.15);
@@ -231,51 +225,16 @@
   border-radius: 50% 20% / 10% 40%;
 }
 
-/* Enhanced iOS-inspired styling with more prominent visuals */
-.ios-card {
-  border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 8px 32px -10px rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.dark .ios-card {
-  background-color: rgba(30, 30, 40, 0.75);
-  box-shadow: 0 8px 32px -10px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* ... keep existing code (SET game patterns, enhanced background patterns) */
-
-/* Enhanced SET card patterns - more visible */
-.set-card-pattern {
-  @apply absolute inset-0 opacity-15 pointer-events-none;
-  background-image: 
-    radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.25) 0%, transparent 45%),
-    radial-gradient(circle at 70% 60%, rgba(239, 68, 68, 0.25) 0%, transparent 45%),
-    radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.25) 0%, transparent 45%);
-}
-
-/* Enhanced iOS style button */
+/* iOS style button */
 .ios-btn {
-  @apply rounded-full px-5 py-2 font-medium transition-all duration-300 bg-white/85 backdrop-blur-md text-foreground shadow-md border border-white/40;
-}
-
-.dark .ios-btn {
-  @apply bg-black/40 border-white/10 text-white;
+  @apply rounded-full px-6 py-3 font-medium transition-all duration-300 bg-white/90 backdrop-blur-md text-foreground shadow-md border border-white/50;
 }
 
 .ios-btn:hover {
   @apply bg-white/95 transform -translate-y-1 shadow-lg;
 }
 
-.dark .ios-btn:hover {
-  @apply bg-black/50;
-}
-
-/* Enhanced SET themed buttons */
+/* SET themed buttons */
 .set-btn-purple {
   @apply bg-set-purple/15 text-set-purple border-set-purple/30 hover:bg-set-purple/25;
 }

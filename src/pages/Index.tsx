@@ -65,47 +65,102 @@ const Index: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 to-blue-50">
+    <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-10">
-        <div className="max-w-4xl w-full flex flex-col items-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Diamond className="h-5 w-5 text-set-purple" />
-            <Circle className="h-5 w-5 text-set-red" />
-            <Triangle className="h-5 w-5 text-set-green" />
-          </div>
-          
-          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-3 tracking-tight">
-            SET Game Detector
-          </h1>
-          
-          <p className="text-center text-gray-600 max-w-lg mb-8">
-            Upload an image of your SET card game layout and we'll identify all valid sets for you using AI.
-          </p>
-          
-          {isMockMode && (
-            <div className="mb-6 p-2 bg-yellow-100 text-yellow-800 rounded-lg max-w-sm text-xs text-center">
-              ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
+      <main className="flex-1 flex flex-col pt-20 sm:pt-24 pb-6 sm:pb-10">
+        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
+          {/* Title section - Enhanced for desktop */}
+          <div className="text-center mb-6 sm:mb-10 animate-fade-in w-full max-w-3xl">
+            <div className="inline-flex items-center justify-center gap-2 bg-background/40 backdrop-blur-md rounded-full px-3 py-1 mb-2 sm:mb-4 border border-border/20 shadow-sm">
+              <Diamond className="h-3.5 w-3.5 text-set-purple" />
+              <Circle className="h-3.5 w-3.5 text-set-red" />
+              <Triangle className="h-3.5 w-3.5 text-set-green" />
             </div>
-          )}
+            <h1 className="text-xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 sm:mb-4 leading-tight">
+              SET Game Detector
+            </h1>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-md mx-auto">
+              Upload an image of your SET card game layout and we'll identify all valid sets for you.
+            </p>
+            
+            {isMockMode && (
+              <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
+                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
+              </div>
+            )}
+          </div>
 
-          <div className="w-full max-w-xl bg-white bg-opacity-40 backdrop-blur-md rounded-xl shadow-lg p-6 mb-10">
-            <div className="relative z-10">
-              {!imageUrl ? (
-                <ImageUploader 
-                  onImageSelected={handleImageSelected} 
-                  isProcessing={isProcessing}
-                />
-              ) : (
-                <Results 
-                  imageUrl={imageUrl}
-                  processedImageUrl={processedImageUrl}
-                  isProcessing={isProcessing}
-                  onReset={handleReset}
-                  foundSets={foundSets}
-                />
-              )}
+          {/* Main content area - Better spacing for desktop */}
+          <div className="w-full mb-8 sm:mb-14">
+            {!imageUrl ? (
+              <ImageUploader 
+                onImageSelected={handleImageSelected} 
+                isProcessing={isProcessing}
+              />
+            ) : (
+              <Results 
+                imageUrl={imageUrl}
+                processedImageUrl={processedImageUrl}
+                isProcessing={isProcessing}
+                onReset={handleReset}
+                foundSets={foundSets}
+              />
+            )}
+          </div>
+
+          {/* How It Works section - Properly pushed below the fold */}
+          <div className={cn(
+            "w-full animate-fade-in mt-12 sm:mt-20 pt-4",
+            "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-6 sm:before:mb-8"
+          )}>
+            <h2 className="text-base sm:text-xl font-semibold mb-4 sm:mb-6 text-center">
+              How It Works
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
+              {[
+                {
+                  title: "Upload Image",
+                  description: "Take a photo of your SET game layout and upload it.",
+                  icon: "diamond"
+                },
+                {
+                  title: "AI Detection",
+                  description: "Our AI analyzes the image to identify all cards and their attributes.",
+                  icon: "circle"
+                },
+                {
+                  title: "View Results",
+                  description: "See all valid sets highlighted directly on your image.",
+                  icon: "triangle"
+                }
+              ].map((step, index) => (
+                <div key={index} className="rounded-xl ios-card hover-lift p-3 sm:p-5 relative overflow-hidden">
+                  <div className="set-card-pattern opacity-20"></div>
+                  <div className="flex flex-col items-center text-center relative z-10">
+                    <div className={cn(
+                      "w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg shadow-sm mb-2 sm:mb-3",
+                      step.icon === "diamond" ? "bg-set-purple/10 set-diamond" : 
+                      step.icon === "circle" ? "bg-set-red/10 set-oval" : 
+                      "bg-set-green/10"
+                    )}>
+                      {step.icon === "diamond" ? (
+                        <Diamond className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-set-purple opacity-80" />
+                      ) : step.icon === "circle" ? (
+                        <Circle className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-set-red opacity-80" />
+                      ) : (
+                        <Triangle className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-set-green opacity-80" />
+                      )}
+                    </div>
+                    <h3 className="text-sm sm:text-base font-medium mb-1 sm:mb-2">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

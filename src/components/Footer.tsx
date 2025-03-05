@@ -1,32 +1,45 @@
 
 import React from "react";
-import { Diamond, Circle, Triangle, Github } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Diamond, Circle, Triangle } from "lucide-react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="py-4 px-3 sm:px-6 mt-auto border-t border-purple-100 bg-white bg-opacity-50 backdrop-blur-sm">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+    <footer className="py-4 sm:py-6 px-3 sm:px-6 mt-auto border-t border-border/10 bg-background/70 backdrop-blur-sm relative overflow-hidden">
+      <div className="set-card-pattern opacity-20"></div>
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 relative z-10">
         <div className="text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-1.5 mb-1">
-            <Diamond className="h-3 w-3 text-set-purple" />
-            <Circle className="h-3 w-3 text-set-red" />
-            <Triangle className="h-3 w-3 text-set-green" />
+            <Diamond className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-set-purple opacity-70" />
+            <Circle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-set-red opacity-70" />
+            <Triangle className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-set-green opacity-70" />
           </div>
-          <p className="text-xs text-gray-500">
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             SET Game Detector &copy; {new Date().getFullYear()}
           </p>
         </div>
         <div className="flex items-center gap-4 sm:gap-8">
           <a
-            href="https://github.com/yourusername/set-detector"
+            href="https://github.com/username/set-game-detector"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-gray-500 hover:text-set-purple transition-colors flex items-center gap-1"
-            aria-label="GitHub Repository"
+            className="text-[10px] sm:text-xs text-muted-foreground hover:text-set-purple transition-colors flex items-center gap-1"
           >
-            <Github className="h-3 w-3" />
+            <Diamond className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             GitHub
+          </a>
+          <a
+            href="#"
+            className="text-[10px] sm:text-xs text-muted-foreground hover:text-set-red transition-colors flex items-center gap-1"
+          >
+            <Circle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+            Privacy
+          </a>
+          <a
+            href="#"
+            className="text-[10px] sm:text-xs text-muted-foreground hover:text-set-green transition-colors flex items-center gap-1"
+          >
+            <Triangle className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+            Terms
           </a>
         </div>
       </div>
