@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Diamond, Circle, Triangle } from "lucide-react";
 import { toast } from "sonner";
 import { detectSets } from "@/core/setDetector";
+import { cn } from "@/lib/utils";
 
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -63,48 +64,35 @@ const Index: React.FC = () => {
     setFoundSets(0);
   };
 
-  const SetIcon = ({ type }: { type: 'diamond' | 'circle' | 'triangle' }) => {
-    const IconComponent = type === 'diamond' ? Diamond : type === 'circle' ? Circle : Triangle;
-    const bgColor = type === 'diamond' ? 'bg-set-purple/10' : type === 'circle' ? 'bg-set-red/10' : 'bg-set-green/10';
-    const textColor = type === 'diamond' ? 'text-set-purple' : type === 'circle' ? 'text-set-red' : 'text-set-green';
-    const shapeClass = type === 'diamond' ? 'set-diamond' : type === 'circle' ? 'set-oval' : '';
-    
-    return (
-      <div className={`w-10 h-10 sm:w-12 sm:h-12 ${bgColor} ${shapeClass} flex items-center justify-center rounded-xl shadow-sm`}>
-        <IconComponent className={`h-5 w-5 sm:h-6 sm:w-6 ${textColor} opacity-80`} />
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      <main className="flex-1 flex flex-col pt-6 sm:pt-8 pb-12 section-padding">
-        {/* Header and title section - more compact */}
-        <div className="text-center mb-6 animate-fade-in px-4">
-          <div className="flex items-center justify-center gap-3 mb-1">
-            <Diamond className="h-5 w-5 text-set-purple opacity-80" />
-            <Circle className="h-5 w-5 text-set-red opacity-80" />
-            <Triangle className="h-5 w-5 text-set-green opacity-80" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1.5 leading-tight">
-            SET Game Detector
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Upload an image of your SET card game layout and we'll identify all valid sets for you.
-          </p>
-          
-          {isMockMode && (
-            <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-md mx-auto text-xs">
-              ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false in your .env file to use the real AWS backend.
+      <main className="flex-1 flex flex-col pt-20 sm:pt-24 pb-10">
+        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
+          {/* Title section */}
+          <div className="text-center mb-6 animate-fade-in">
+            <div className="inline-flex items-center justify-center gap-2 bg-background/40 backdrop-blur-md rounded-full px-3 py-1 mb-3 border border-border/20 shadow-sm">
+              <Diamond className="h-3.5 w-3.5 text-set-purple" />
+              <Circle className="h-3.5 w-3.5 text-set-red" />
+              <Triangle className="h-3.5 w-3.5 text-set-green" />
             </div>
-          )}
-        </div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 leading-tight">
+              SET Game Detector
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
+              Upload an image of your SET card game layout and we'll identify all valid sets for you.
+            </p>
+            
+            {isMockMode && (
+              <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
+                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
+              </div>
+            )}
+          </div>
 
-        {/* Main content - adjusted to ensure uploader is visible without scrolling */}
-        <div className="flex-1 flex flex-col justify-start">
-          <div className="mb-16 sm:mb-20"> {/* Added margin to push "How It Works" below the fold */}
+          {/* Main content area */}
+          <div className="w-full mb-14 sm:mb-16">
             {!imageUrl ? (
               <ImageUploader 
                 onImageSelected={handleImageSelected} 
@@ -121,12 +109,15 @@ const Index: React.FC = () => {
             )}
           </div>
 
-          {/* How It Works section - will be below the fold */}
-          <div className="animate-fade-in px-4 mt-auto">
-            <h2 className="text-xl font-semibold mb-4 text-center">
+          {/* How It Works section - below the fold */}
+          <div className={cn(
+            "w-full animate-fade-in mt-auto pt-4",
+            "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-8"
+          )}>
+            <h2 className="text-base sm:text-lg font-semibold mb-4 text-center">
               How It Works
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               {[
                 {
                   title: "Upload Image",
@@ -144,11 +135,24 @@ const Index: React.FC = () => {
                   icon: "triangle"
                 }
               ].map((step, index) => (
-                <div key={index} className="rounded-2xl ios-card hover-lift p-3 sm:p-4 relative overflow-hidden">
-                  <div className="set-card-pattern"></div>
+                <div key={index} className="rounded-xl ios-card hover-lift p-3 relative overflow-hidden">
+                  <div className="set-card-pattern opacity-20"></div>
                   <div className="flex flex-col items-center text-center relative z-10">
-                    <SetIcon type={step.icon as 'diamond' | 'circle' | 'triangle'} />
-                    <h3 className="text-base font-medium mt-2 mb-1">
+                    <div className={cn(
+                      "w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg shadow-sm mb-2",
+                      step.icon === "diamond" ? "bg-set-purple/10 set-diamond" : 
+                      step.icon === "circle" ? "bg-set-red/10 set-oval" : 
+                      "bg-set-green/10"
+                    )}>
+                      {step.icon === "diamond" ? (
+                        <Diamond className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-purple opacity-80" />
+                      ) : step.icon === "circle" ? (
+                        <Circle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-red opacity-80" />
+                      ) : (
+                        <Triangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-green opacity-80" />
+                      )}
+                    </div>
+                    <h3 className="text-sm font-medium mb-1">
                       {step.title}
                     </h3>
                     <p className="text-xs text-muted-foreground">
