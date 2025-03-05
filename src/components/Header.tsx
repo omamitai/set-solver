@@ -11,10 +11,7 @@ const Header: React.FC = () => {
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-6 py-3 bg-background/80 backdrop-blur-xl border-b border-border/10">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div className="animate-fade-in flex items-center gap-2">
-          <div className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-primary/5 flex items-center justify-center overflow-hidden shadow-sm border border-primary/10">
-            <span className="text-primary font-bold text-sm sm:text-base relative z-10">S</span>
-            <div className="set-card-pattern opacity-20"></div>
-          </div>
+          {/* S logo removed as requested */}
         </div>
 
         <Button

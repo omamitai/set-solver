@@ -1,12 +1,14 @@
+
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import ImageUploader from "@/components/ImageUploader";
 import Results from "@/components/Results";
 import Footer from "@/components/Footer";
-import { Diamond, Circle, Triangle } from "lucide-react";
+import { Diamond, Circle, Triangle, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { detectSets } from "@/core/setDetector";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
 
 const Index: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -15,6 +17,8 @@ const Index: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [foundSets, setFoundSets] = useState(0);
   const [isMockMode, setIsMockMode] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     setIsMockMode(process.env.REACT_APP_USE_MOCK_DATA === 'true');
@@ -64,7 +68,10 @@ const Index: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background to-background/80">
+    <div className={cn(
+      "min-h-screen flex flex-col",
+      isDark ? "bg-gradient-to-br from-background to-background/80" : "bg-set-gradient"
+    )}>
       <Header />
       
       <main className="flex-1 flex flex-col pt-16 sm:pt-20 pb-6">
@@ -72,11 +79,12 @@ const Index: React.FC = () => {
           {/* Title section */}
           <div className="text-center mb-6 sm:mb-8 animate-fade-in w-full max-w-2xl">
             <div className="inline-flex items-center justify-center gap-2 bg-background/40 backdrop-blur-md rounded-full px-3 py-1 mb-3 sm:mb-4 border border-border/20 shadow-sm">
-              <Diamond className="h-3.5 w-3.5 text-set-purple" />
+              <Diamond className="h-3.5 w-3.5 text-set-purple animate-pulse" />
               <Circle className="h-3.5 w-3.5 text-set-red" />
               <Triangle className="h-3.5 w-3.5 text-set-green" />
+              <Sparkles className="h-3 w-3 text-yellow-500 animate-pulse" />
             </div>
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3 sm:mb-4 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3 sm:mb-4 leading-tight">
               SET Game Detector
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto">
@@ -91,7 +99,7 @@ const Index: React.FC = () => {
           </div>
 
           {/* Main content area */}
-          <div className="w-full mb-8">
+          <div className="w-full mb-8 transition-all duration-500">
             {!imageUrl ? (
               <ImageUploader 
                 onImageSelected={handleImageSelected} 

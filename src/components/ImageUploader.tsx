@@ -1,8 +1,10 @@
+
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Diamond, Circle, Triangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useTheme } from "@/context/ThemeContext";
 
 interface ImageUploaderProps {
   onImageSelected: (image: File) => void;
@@ -12,6 +14,8 @@ interface ImageUploaderProps {
 const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProcessing }) => {
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -65,10 +69,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       className={cn(
         "w-full max-w-sm mx-auto animate-scale-in transition-all duration-300",
         "rounded-2xl border-2 border-dashed p-6 text-center",
-        "bg-white/80 backdrop-blur-sm shadow-lg",
+        isDark 
+          ? "bg-background/30 border-primary/40 backdrop-blur-md shadow-xl" 
+          : "bg-white/80 backdrop-blur-sm shadow-lg",
         dragActive 
           ? "border-primary/60 bg-primary/5 scale-[1.02]" 
-          : "border-border/50 scale-100",
+          : isDark ? "border-border/70 scale-100" : "border-border/50 scale-100",
         isProcessing ? "opacity-50 pointer-events-none" : "opacity-100"
       )}
       onDragEnter={handleDrag}
@@ -84,7 +90,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         </div>
         
         <div className="flex flex-col items-center gap-3">
-          <div className="rounded-full bg-primary/10 p-2.5 shadow-sm pulse-soft">
+          <div className={cn(
+            "rounded-full p-2.5 shadow-sm pulse-soft",
+            isDark ? "bg-primary/20" : "bg-primary/10"
+          )}>
             <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           </div>
           
@@ -100,7 +109,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         
         <Button
           onClick={handleButtonClick}
-          className="ios-btn set-btn-purple font-medium"
+          className={cn(
+            "font-medium",
+            isDark 
+              ? "bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30" 
+              : "ios-btn set-btn-purple"
+          )}
           disabled={isProcessing}
         >
           Select Image
