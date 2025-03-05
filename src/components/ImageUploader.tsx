@@ -65,7 +65,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
     <div 
       className={cn(
         "w-full max-w-xl mx-auto animate-scale-in transition-all duration-300",
-        "rounded-3xl border-2 border-dashed p-8 sm:p-12 text-center",
+        "rounded-3xl border-2 border-dashed p-5 sm:p-8 text-center", // Reduced padding
         "ios-card bg-background/50 relative overflow-hidden",
         dragActive 
           ? "border-primary/60 bg-primary/10 scale-[1.02] shadow-lg" 
@@ -78,26 +78,26 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDrop={handleDrop}
     >
       <div className="set-card-pattern"></div>
-      <div className="flex flex-col items-center justify-center gap-5 sm:gap-7 relative z-10">
+      <div className="flex flex-col items-center justify-center gap-3 sm:gap-5 relative z-10">
         <div className="flex items-center justify-center space-x-4">
-          <div className="h-10 w-10 set-diamond bg-set-purple/20 flex items-center justify-center rounded-xl shadow-sm">
-            <Diamond className="h-5 w-5 text-set-purple" />
+          <div className="h-8 w-8 sm:h-10 sm:w-10 set-diamond bg-set-purple/20 flex items-center justify-center rounded-xl shadow-sm">
+            <Diamond className="h-4 w-4 sm:h-5 sm:w-5 text-set-purple" />
           </div>
-          <div className="h-10 w-10 set-oval bg-set-red/20 flex items-center justify-center rounded-xl shadow-sm">
-            <Circle className="h-5 w-5 text-set-red" />
+          <div className="h-8 w-8 sm:h-10 sm:w-10 set-oval bg-set-red/20 flex items-center justify-center rounded-xl shadow-sm">
+            <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-set-red" />
           </div>
-          <div className="h-10 w-10 bg-set-green/20 flex items-center justify-center rounded-xl shadow-sm">
-            <Triangle className="h-5 w-5 text-set-green" />
+          <div className="h-8 w-8 sm:h-10 sm:w-10 bg-set-green/20 flex items-center justify-center rounded-xl shadow-sm">
+            <Triangle className="h-4 w-4 sm:h-5 sm:w-5 text-set-green" />
           </div>
         </div>
-        <div className="rounded-full bg-primary/10 p-5 shadow-sm pulse-soft">
-          <ArrowUp className="h-7 w-7 sm:h-9 sm:w-9 text-primary" />
+        <div className="rounded-full bg-primary/10 p-4 shadow-sm pulse-soft">
+          <ArrowUp className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
         </div>
-        <div className="space-y-3 sm:space-y-4">
-          <h3 className="text-lg sm:text-2xl md:text-3xl font-semibold">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="text-lg sm:text-xl md:text-2xl font-semibold">
             Upload your SET game image
           </h3>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-xs mx-auto">
+          <p className="text-sm text-muted-foreground max-w-xs mx-auto">
             Drag and drop your image here, or tap to browse
           </p>
           <p className="text-xs text-muted-foreground">
@@ -106,7 +106,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         </div>
         <Button
           onClick={handleButtonClick}
-          className="mt-3 sm:mt-4 ios-btn set-btn-purple font-semibold px-8 py-6 h-auto text-base"
+          className="mt-2 ios-btn set-btn-purple font-semibold px-6 py-2 h-auto text-sm sm:text-base"
           disabled={isProcessing}
         >
           Select Image
