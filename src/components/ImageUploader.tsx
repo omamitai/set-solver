@@ -67,7 +67,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
     <div 
       className={cn(
         "w-full max-w-xl mx-auto animate-scale-in transition-all duration-300",
-        "rounded-xl border-2 border-dashed p-8 text-center",
+        "rounded-2xl border-2 border-dashed p-5 sm:p-8 text-center ios-card",
         dragActive ? "border-primary bg-primary/5" : "border-border",
         isProcessing ? "opacity-50 pointer-events-none" : "opacity-100"
       )}
@@ -76,14 +76,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDragOver={handleDrag}
       onDrop={handleDrop}
     >
-      <div className="flex flex-col items-center justify-center gap-4">
+      <div className="flex flex-col items-center justify-center gap-3 sm:gap-4">
         <div className="rounded-full bg-primary/10 p-3">
-          <ArrowUp className="h-6 w-6 text-primary" />
+          <ArrowUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
         </div>
-        <div className="space-y-2">
-          <h3 className="text-lg font-medium">Upload your Set game image</h3>
-          <p className="text-sm text-muted-foreground">
-            Drag and drop your image here, or click to browse
+        <div className="space-y-1 sm:space-y-2">
+          <h3 className="text-base sm:text-lg font-medium">Upload your Set game image</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Drag and drop your image here, or tap to browse
           </p>
           <p className="text-xs text-muted-foreground">
             Supports PNG, JPG, JPEG (max 10MB)
@@ -91,7 +91,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         </div>
         <Button
           onClick={handleButtonClick}
-          className="mt-2 hover-lift"
+          className="mt-1 sm:mt-2 ios-button hover-lift"
           disabled={isProcessing}
         >
           Select Image

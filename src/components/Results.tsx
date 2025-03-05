@@ -20,26 +20,26 @@ const Results: React.FC<ResultsProps> = ({
   if (!imageUrl) return null;
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-8 animate-slide-up">
-      <Card className="overflow-hidden glass glass-dark card-shadow">
+    <div className="w-full max-w-4xl mx-auto mt-4 sm:mt-8 animate-slide-up">
+      <Card className="overflow-hidden ios-card card-shadow">
         <CardContent className="p-0">
           <div className="relative">
             {isProcessing && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-10">
-                <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin mb-4"></div>
-                <p className="text-foreground font-medium">Processing image...</p>
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-4 border-primary border-t-transparent animate-spin mb-3 sm:mb-4"></div>
+                <p className="text-foreground text-sm sm:text-base font-medium">Processing image...</p>
               </div>
             )}
             <img
               src={imageUrl}
               alt="Set game"
               className={cn(
-                "w-full h-auto object-contain max-h-[70vh]",
+                "w-full h-auto object-contain max-h-[50vh] sm:max-h-[70vh]",
                 isProcessing ? "filter blur-sm" : "filter-none transition-all duration-500"
               )}
             />
             {!isProcessing && (
-              <div className="absolute top-4 right-4 glass glass-dark rounded-full px-4 py-2 text-sm font-medium">
+              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 ios-card px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium">
                 Found: {foundSets} {foundSets === 1 ? "set" : "sets"}
               </div>
             )}
@@ -47,11 +47,11 @@ const Results: React.FC<ResultsProps> = ({
         </CardContent>
       </Card>
 
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-4 sm:mt-6">
         <Button
           onClick={onReset}
           variant="outline"
-          className="hover-lift"
+          className="hover-lift ios-button text-sm"
           disabled={isProcessing}
         >
           Try Another Image

@@ -44,13 +44,13 @@ const Index: React.FC = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 pt-24 section-padding">
+      <main className="flex-1 pt-16 sm:pt-20 md:pt-24 section-padding">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+          <div className="text-center mb-8 sm:mb-12 animate-fade-in">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3 sm:mb-4">
               Set Game Detector
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Upload an image of your Set card game layout and we'll identify all valid sets for you.
             </p>
           </div>
@@ -69,9 +69,9 @@ const Index: React.FC = () => {
             />
           )}
 
-          <div className="mt-16 animate-fade-in">
-            <h2 className="text-2xl font-semibold mb-6 text-center">How It Works</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-10 sm:mt-16 animate-fade-in">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-center">How It Works</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
               {[
                 {
                   title: "Upload Image",
@@ -86,12 +86,12 @@ const Index: React.FC = () => {
                   description: "See all valid sets highlighted directly on your image."
                 }
               ].map((step, index) => (
-                <div key={index} className="glass glass-dark rounded-xl p-6 hover-lift">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <span className="text-primary font-medium">{index + 1}</span>
+                <div key={index} className="ios-card p-4 sm:p-6 hover-lift">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center mb-3 sm:mb-4">
+                    <span className="text-primary font-medium text-sm sm:text-base">{index + 1}</span>
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm">{step.description}</p>
+                  <h3 className="text-base sm:text-lg font-medium mb-1 sm:mb-2">{step.title}</h3>
+                  <p className="text-muted-foreground text-xs sm:text-sm">{step.description}</p>
                 </div>
               ))}
             </div>
