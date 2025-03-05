@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, Diamond, Circle, Triangle } from "lucide-react";
+import { Moon, Sun, Diamond, Circle, Triangle, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Header: React.FC = () => {
@@ -34,15 +34,24 @@ const Header: React.FC = () => {
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div className="animate-fade-in flex items-center gap-2.5">
-          <div className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden shadow-sm border border-primary/20">
-            <span className="text-primary font-bold text-sm sm:text-lg relative z-10">S</span>
+          <div className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-primary/15 flex items-center justify-center overflow-hidden shadow-sm border border-primary/20 pulse-soft">
+            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             <div className="set-card-pattern"></div>
           </div>
           <div className="flex flex-col items-start">
-            <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">
-              SET Game
-            </h1>
-            <span className="text-[10px] sm:text-xs text-muted-foreground -mt-0.5">Detector</span>
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight bg-gradient-to-r from-primary via-set-purple to-set-red bg-clip-text text-transparent">
+                SET Game
+              </h1>
+              <div className="bg-set-purple/15 px-2 py-0.5 rounded-full border border-set-purple/20">
+                <span className="text-xs font-medium text-set-purple">Detector</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 -mt-0.5">
+              <Diamond className="h-3 w-3 text-set-purple opacity-80" />
+              <Circle className="h-3 w-3 text-set-red opacity-80" />
+              <Triangle className="h-3 w-3 text-set-green opacity-80" />
+            </div>
           </div>
         </div>
 
