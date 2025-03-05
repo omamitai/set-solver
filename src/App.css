@@ -16,6 +16,11 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.dark .ios-card {
+  background-color: rgba(30, 30, 35, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .ios-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.25);
@@ -29,9 +34,9 @@
     radial-gradient(circle at 40% 60%, rgba(167, 243, 208, 0.15) 0%, rgba(167, 243, 208, 0) 90%);
 }
 
-/* Enhanced background pattern */
+/* Enhanced background gradient for light mode - less harsh */
 .bg-set-gradient {
-  background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(240,240,245,0.9) 100%);
+  background: linear-gradient(135deg, rgba(240,240,245,0.9) 0%, rgba(230,230,235,1) 100%);
   background-size: 200% 200%;
   animation: gradientMove 15s ease infinite;
 }
