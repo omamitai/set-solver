@@ -68,19 +68,19 @@ const Index: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      <main className="flex-1 flex flex-col pt-16 pb-4 sm:pt-20 sm:pb-6">
+      <main className="flex-1 flex flex-col pt-14 pb-4 sm:pt-16 sm:pb-6">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          {/* Title section - Optimized spacing for both mobile and desktop */}
-          <div className="text-center mb-4 sm:mb-6 animate-fade-in w-full max-w-3xl">
+          {/* Title section - Increased font size and improved spacing */}
+          <div className="text-center mb-4 sm:mb-5 animate-fade-in w-full max-w-3xl">
             <div className="inline-flex items-center justify-center gap-2 bg-background/40 backdrop-blur-md rounded-full px-3 py-1 mb-2 border border-border/20 shadow-sm">
               <Diamond className="h-3.5 w-3.5 text-set-purple" />
               <Circle className="h-3.5 w-3.5 text-set-red" />
               <Triangle className="h-3.5 w-3.5 text-set-green" />
             </div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-2 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
               SET Game Detector
             </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
               Upload an image of your SET card game layout and we'll identify all valid sets for you.
             </p>
             
@@ -91,8 +91,8 @@ const Index: React.FC = () => {
             )}
           </div>
 
-          {/* Main content area - Reduced vertical spacing */}
-          <div className="w-full mb-6">
+          {/* Main content area - Make uploader fit in initial viewport */}
+          <div className="w-full">
             {!imageUrl ? (
               <ImageUploader 
                 onImageSelected={handleImageSelected} 
@@ -109,12 +109,12 @@ const Index: React.FC = () => {
             )}
           </div>
 
-          {/* How It Works section - Moved closer to the main content */}
+          {/* How It Works section - Moved further down to be below the fold */}
           <div className={cn(
-            "w-full animate-fade-in mt-6 sm:mt-10 pt-2",
+            "w-full animate-fade-in mt-16 sm:mt-32 pt-2",
             "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4 sm:before:mb-6"
           )}>
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-5 text-center">
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-5 text-center">
               How It Works
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">

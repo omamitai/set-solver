@@ -65,8 +65,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
     <div 
       className={cn(
         "w-full max-w-sm mx-auto animate-scale-in transition-all duration-300",
-        "rounded-2xl border-2 border-dashed p-4 text-center",
-        "ios-card relative overflow-hidden",
+        "rounded-2xl border-2 border-dashed p-3 text-center",
+        "ios-card relative overflow-hidden h-[280px] sm:h-[320px] flex flex-col justify-center",
         dragActive 
           ? "border-primary/60 bg-primary/10 scale-[1.02] shadow-lg" 
           : "border-border/50 scale-100 shadow-md",
@@ -78,7 +78,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDrop={handleDrop}
     >
       <div className="set-card-pattern opacity-30"></div>
-      <div className="flex flex-col items-center justify-center gap-2 relative z-10">
+      <div className="flex flex-col items-center justify-center gap-2 relative z-10 h-full">
         {/* Compact icon row */}
         <div className="flex items-center justify-center space-x-2">
           <div className="h-4 w-4 set-diamond bg-set-purple/20 flex items-center justify-center rounded-md shadow-sm">
@@ -93,16 +93,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         </div>
         
         {/* Upload arrow and text */}
-        <div className="flex flex-col items-center space-y-1.5">
-          <div className="rounded-full bg-primary/10 p-1.5 shadow-sm pulse-soft">
-            <ArrowUp className="h-3 w-3 text-primary" />
+        <div className="flex flex-col items-center space-y-2">
+          <div className="rounded-full bg-primary/10 p-2 shadow-sm pulse-soft">
+            <ArrowUp className="h-4 w-4 text-primary" />
           </div>
           
-          <div className="space-y-0.5">
-            <h3 className="text-sm font-semibold">
+          <div className="space-y-1">
+            <h3 className="text-base sm:text-lg font-semibold">
               Upload your SET game image
             </h3>
-            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">
               Drag and drop your image here, or tap to browse
             </p>
           </div>
@@ -111,14 +111,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         {/* Button */}
         <Button
           onClick={handleButtonClick}
-          className="ios-btn set-btn-purple font-medium px-4 py-1 h-auto text-xs mt-1"
+          className="ios-btn set-btn-purple font-medium px-5 py-2 h-auto text-sm mt-3"
           disabled={isProcessing}
         >
           Select Image
         </Button>
         
         {/* File info */}
-        <p className="text-[10px] text-muted-foreground">
+        <p className="text-[10px] text-muted-foreground mt-2">
           Supports PNG, JPG, JPEG (max 10MB)
         </p>
       </div>
