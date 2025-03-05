@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Diamond, Circle, Triangle } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -64,12 +64,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
   return (
     <div 
       className={cn(
-        "max-w-xs mx-auto animate-scale-in transition-all duration-300",
-        "rounded-xl border-2 border-dashed p-4 text-center",
-        "ios-card relative overflow-hidden",
+        "w-full max-w-sm mx-auto animate-scale-in transition-all duration-300",
+        "rounded-xl bg-white p-8 text-center shadow-md",
         dragActive 
-          ? "border-primary/60 bg-primary/10 scale-[1.02] shadow-lg" 
-          : "border-border/50 scale-100 shadow-md",
+          ? "border-2 border-dashed border-primary/60 bg-white scale-[1.02]" 
+          : "border border-gray-100 scale-100",
         isProcessing ? "opacity-50 pointer-events-none" : "opacity-100"
       )}
       onDragEnter={handleDrag}
@@ -77,48 +76,29 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDragOver={handleDrag}
       onDrop={handleDrop}
     >
-      <div className="set-card-pattern opacity-30"></div>
-      <div className="flex flex-col items-center justify-center gap-3 relative z-10">
-        {/* Compact icon row */}
-        <div className="flex items-center justify-center space-x-2">
-          <div className="h-4 w-4 set-diamond bg-set-purple/20 flex items-center justify-center rounded-md shadow-sm">
-            <Diamond className="h-2 w-2 text-set-purple" />
-          </div>
-          <div className="h-4 w-4 set-oval bg-set-red/20 flex items-center justify-center rounded-md shadow-sm">
-            <Circle className="h-2 w-2 text-set-red" />
-          </div>
-          <div className="h-4 w-4 bg-set-green/20 flex items-center justify-center rounded-md shadow-sm">
-            <Triangle className="h-2 w-2 text-set-green" />
-          </div>
+      <div className="flex flex-col items-center justify-center gap-3">
+        <div className="rounded-full bg-primary/10 p-3">
+          <ArrowUp className="h-5 w-5 text-primary" />
         </div>
         
-        {/* Upload arrow and text */}
-        <div className="flex flex-col items-center space-y-1">
-          <div className="rounded-full bg-primary/10 p-2 shadow-sm">
-            <ArrowUp className="h-3 w-3 text-primary" />
-          </div>
-          
-          <div className="space-y-1">
-            <h3 className="text-sm font-semibold">
-              Upload SET game image
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Drag and drop or tap to browse
-            </p>
-          </div>
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold text-gray-800">
+            Upload SET game image
+          </h3>
+          <p className="text-sm text-gray-500">
+            Drag and drop or tap to browse
+          </p>
         </div>
         
-        {/* Button */}
         <Button
           onClick={handleButtonClick}
-          className="ios-btn set-btn-purple font-medium px-4 py-1 h-auto text-xs mt-1"
+          className="mt-4 bg-primary hover:bg-primary/90 text-white font-medium"
           disabled={isProcessing}
         >
           Select Image
         </Button>
         
-        {/* File info */}
-        <p className="text-[10px] text-muted-foreground mt-0">
+        <p className="text-xs text-gray-400 mt-2">
           PNG, JPG, JPEG (max 10MB)
         </p>
       </div>

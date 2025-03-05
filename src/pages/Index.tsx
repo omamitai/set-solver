@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import ImageUploader from "@/components/ImageUploader";
@@ -64,33 +65,32 @@ const Index: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-set-gradient">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 to-blue-50">
       <Header />
       
-      <main className="flex-1 flex flex-col pt-12 sm:pt-16 pb-6 sm:pb-10">
-        <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          <div className="text-center mb-4 sm:mb-5 animate-fade-in w-full max-w-3xl">
-            <div className="inline-flex items-center justify-center gap-2 bg-background/50 backdrop-blur-md rounded-full px-3 py-1 mb-2 border border-border/30 shadow-sm">
-              <Diamond className="h-3.5 w-3.5 text-set-purple" />
-              <Circle className="h-3.5 w-3.5 text-set-red" />
-              <Triangle className="h-3.5 w-3.5 text-set-green" />
-            </div>
-            <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight mb-2 leading-tight">
-              SET Game Detector
-            </h1>
-            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-              Upload an image of your SET card game layout and we'll identify all valid sets for you using AI.
-            </p>
-            
-            {isMockMode && (
-              <div className="mt-1 mb-2 p-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-sm mx-auto text-[11px] sm:text-xs">
-                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
-              </div>
-            )}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-10">
+        <div className="max-w-4xl w-full flex flex-col items-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Diamond className="h-5 w-5 text-set-purple" />
+            <Circle className="h-5 w-5 text-set-red" />
+            <Triangle className="h-5 w-5 text-set-green" />
           </div>
+          
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-3 tracking-tight">
+            SET Game Detector
+          </h1>
+          
+          <p className="text-center text-gray-600 max-w-lg mb-8">
+            Upload an image of your SET card game layout and we'll identify all valid sets for you using AI.
+          </p>
+          
+          {isMockMode && (
+            <div className="mb-6 p-2 bg-yellow-100 text-yellow-800 rounded-lg max-w-sm text-xs text-center">
+              ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
+            </div>
+          )}
 
-          <div className="w-full mb-8 sm:mb-10 bg-background/30 backdrop-blur-sm rounded-xl border border-border/30 shadow-md p-4 sm:p-5 relative overflow-hidden">
-            <div className="set-card-pattern opacity-10"></div>
+          <div className="w-full max-w-xl bg-white bg-opacity-40 backdrop-blur-md rounded-xl shadow-lg p-6 mb-10">
             <div className="relative z-10">
               {!imageUrl ? (
                 <ImageUploader 
@@ -106,63 +106,6 @@ const Index: React.FC = () => {
                   foundSets={foundSets}
                 />
               )}
-            </div>
-          </div>
-
-          <div 
-            id="how-it-works"
-            className={cn(
-              "w-full animate-fade-in mt-4 sm:mt-8",
-              "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4"
-            )}
-          >
-            <h2 className="text-lg font-semibold mb-4 text-center">
-              How It Works
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                {
-                  title: "Upload Image",
-                  description: "Take a photo of your SET game layout and upload it to our secure server.",
-                  icon: "diamond"
-                },
-                {
-                  title: "AI Detection",
-                  description: "Our computer vision AI analyzes the image to identify all cards and their attributes.",
-                  icon: "circle"
-                },
-                {
-                  title: "View Results",
-                  description: "See all valid sets highlighted directly on your image with detailed explanations.",
-                  icon: "triangle"
-                }
-              ].map((step, index) => (
-                <div key={index} className="rounded-xl ios-card hover-lift p-4 relative overflow-hidden">
-                  <div className="set-card-pattern opacity-20"></div>
-                  <div className="flex flex-col items-center text-center relative z-10">
-                    <div className={cn(
-                      "w-9 h-9 flex items-center justify-center rounded-lg shadow-sm mb-3",
-                      step.icon === "diamond" ? "bg-set-purple/15 set-diamond" : 
-                      step.icon === "circle" ? "bg-set-red/15 set-oval" : 
-                      "bg-set-green/15"
-                    )}>
-                      {step.icon === "diamond" ? (
-                        <Diamond className="h-4 w-4 text-set-purple opacity-80" />
-                      ) : step.icon === "circle" ? (
-                        <Circle className="h-4 w-4 text-set-red opacity-80" />
-                      ) : (
-                        <Triangle className="h-4 w-4 text-set-green opacity-80" />
-                      )}
-                    </div>
-                    <h3 className="text-base font-medium mb-2">
-                      {step.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </div>
