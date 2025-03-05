@@ -44,16 +44,42 @@ const ec2DetectSets = async (imageFile) => {
     
     if (!endpoint || endpoint === "http://your-ec2-instance-public-dns:8000/detect-sets") {
       console.error("EC2 server URL not correctly configured in environment variables:", endpoint);
-      throw new Error("EC2 server URL not correctly configured - still has placeholder value");
+      throw new Error("EC2 server URL not correctly configured - still has placeholder value. Please update your .env file with the correct URL.");
     }
     
     console.log("Calling EC2 server:", endpoint);
     
+    // First test if the server is reachable with a timeout
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const healthResponse = await fetch(endpoint.replace('/detect-sets', '/health'), {
+        signal: controller.signal
+      }).catch(() => null);
+      
+      clearTimeout(timeoutId);
+      
+      if (!healthResponse || !healthResponse.ok) {
+        console.warn("EC2 server health check failed, but will still try to process the request");
+      }
+    } catch (error) {
+      console.warn("EC2 server health check failed, but will still try to process the request:", error.message);
+    }
+    
+    // Set a longer timeout for the actual request
+    const requestTimeout = 30000; // 30 seconds
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
+    
     const response = await fetch(endpoint, {
       method: 'POST',
       body: formData,
+      signal: controller.signal
       // No need to set Content-Type as it's automatically set with FormData
     });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -67,6 +93,20 @@ const ec2DetectSets = async (imageFile) => {
     return result;
   } catch (error) {
     console.error("Error calling EC2 SET detection API:", error);
+    
+    // Provide more helpful error messages based on error type
+    if (error.name === 'AbortError') {
+      return {
+        success: false,
+        error: "Request timed out. The EC2 server took too long to respond. Please check your server and try again."
+      };
+    } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      return {
+        success: false,
+        error: "Network error: Could not connect to the EC2 server. Please check that your server is running and your EC2_SERVER_URL is correct."
+      };
+    }
+    
     return {
       success: false,
       error: `Failed to connect to SET detection service: ${error.message}. Please check your EC2 server configuration.`

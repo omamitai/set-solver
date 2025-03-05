@@ -11,12 +11,19 @@ sudo apt-get upgrade -y
 
 # Install required system dependencies
 echo "Installing system dependencies..."
-sudo apt-get install -y python3-pip python3-dev python3-venv libgl1-mesa-glx libglib2.0-0
+sudo apt-get install -y python3-pip python3-dev python3-venv libgl1-mesa-glx libglib2.0-0 git
 
 # Create project directory
 echo "Creating project directory..."
 mkdir -p ~/set-game-detector
 cd ~/set-game-detector
+
+# Clone the repository if not already present
+if [ ! -f "server.py" ]; then
+    echo "Downloading project files..."
+    # You can add a git clone command here if your code is in a repository
+    # git clone https://github.com/yourusername/set-game-detector.git .
+fi
 
 # Create and activate virtual environment
 echo "Setting up Python virtual environment..."
@@ -52,6 +59,7 @@ User=ubuntu
 WorkingDirectory=/home/ubuntu/set-game-detector
 ExecStart=/home/ubuntu/set-game-detector/venv/bin/gunicorn --bind 0.0.0.0:8000 server:app
 Restart=always
+RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=set-detector
@@ -64,6 +72,11 @@ EOL'
 sudo systemctl daemon-reload
 sudo systemctl enable set-detector
 sudo systemctl start set-detector
+
+# Set up firewall if needed
+echo "Configuring firewall to allow traffic on port 8000..."
+sudo ufw allow 8000/tcp
+sudo ufw status
 
 echo "========================================================"
 echo "SET Game Detector EC2 setup complete!"

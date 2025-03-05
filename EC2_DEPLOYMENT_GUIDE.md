@@ -33,19 +33,27 @@ This guide explains how to deploy the SET Game Detector application on an Amazon
    ssh -i /path/to/your-key-pair.pem ubuntu@your-ec2-public-dns
    ```
 
-## Step 3: Set Up the Server
+## Step 3: Upload Files to EC2
 
-1. Update the system:
+1. Create a local directory with all required files:
+   - server.py
+   - requirements.txt
+   - ec2_setup.sh
+   - model files (if you have them)
+
+2. Upload files to your EC2 instance (from your local machine):
    ```
-   sudo apt update && sudo apt upgrade -y
+   # Create the directory on EC2
+   ssh -i /path/to/your-key-pair.pem ubuntu@your-ec2-public-dns "mkdir -p ~/set-game-detector"
+   
+   # Upload server files
+   scp -i /path/to/your-key-pair.pem server.py requirements.txt ec2_setup.sh ubuntu@your-ec2-public-dns:~/set-game-detector/
+   
+   # Make the setup script executable
+   ssh -i /path/to/your-key-pair.pem ubuntu@your-ec2-public-dns "chmod +x ~/set-game-detector/ec2_setup.sh"
    ```
 
-2. Upload the code to your EC2 instance (from your local machine):
-   ```
-   scp -i /path/to/your-key-pair.pem -r /path/to/local/set-game-detector ubuntu@your-ec2-public-dns:~
-   ```
-
-3. Upload the model files to the correct directories (from your local machine):
+3. If you have model files, upload them to the correct directories:
    ```
    # Create the directories first
    ssh -i /path/to/your-key-pair.pem ubuntu@your-ec2-public-dns "mkdir -p ~/set-game-detector/models/Characteristics/11022025 ~/set-game-detector/models/Shape/15052024 ~/set-game-detector/models/Card/16042024"
@@ -57,26 +65,33 @@ This guide explains how to deploy the SET Game Detector application on an Amazon
    scp -i /path/to/your-key-pair.pem models/Card/16042024/best.pt ubuntu@your-ec2-public-dns:~/set-game-detector/models/Card/16042024/
    ```
 
-4. Run the setup script on the EC2 instance:
+## Step 4: Run the Setup Script
+
+1. Run the setup script on the EC2 instance:
    ```
-   cd ~/set-game-detector
-   chmod +x ec2_setup.sh
-   ./ec2_setup.sh
+   ssh -i /path/to/your-key-pair.pem ubuntu@your-ec2-public-dns "cd ~/set-game-detector && ./ec2_setup.sh"
    ```
 
-## Step 4: Configure the Frontend
+2. Once the script completes, verify that the service is running:
+   ```
+   ssh -i /path/to/your-key-pair.pem ubuntu@your-ec2-public-dns "sudo systemctl status set-detector"
+   ```
 
-1. Update your frontend `.env` file with:
+## Step 5: Configure the Frontend
+
+1. Get your EC2 instance's public DNS or IP address from the AWS console.
+
+2. Update your frontend `.env` file with:
    ```
    REACT_APP_USE_MOCK_DATA=false
    REACT_APP_EC2_SERVER_URL=http://your-ec2-public-dns:8000/detect-sets
    ```
 
-2. Rebuild and deploy your frontend:
+3. Rebuild and deploy your frontend:
    - If using AWS Amplify, commit and push the changes to your repository
    - Amplify will automatically rebuild and deploy
 
-## Step 5: Test the Deployment
+## Step 6: Test the Deployment
 
 1. Open your frontend application
 2. Upload an image of a SET game
@@ -88,7 +103,7 @@ If you encounter issues:
 
 1. Check the server logs:
    ```
-   sudo journalctl -u set-detector
+   sudo journalctl -u set-detector -n 100
    ```
 
 2. Make sure the server is running:
@@ -103,6 +118,13 @@ If you encounter issues:
 
 4. Check for CORS issues in your browser's developer console
 
+5. Verify your EC2 security group allows inbound traffic on port 8000
+
+6. Test the API directly:
+   ```
+   curl -X GET http://localhost:8000
+   ```
+
 ## Security Considerations
 
 1. This setup is basic and meant for development/testing
@@ -116,8 +138,16 @@ If you encounter issues:
 1. To update the application:
    ```
    cd ~/set-game-detector
-   git pull  # If using git
+   # Upload new files if needed
    sudo systemctl restart set-detector
    ```
 
 2. Monitor your EC2 instance performance in the AWS console
+
+## Cost Management
+
+Remember that EC2 instances incur costs as long as they're running, regardless of usage. Consider:
+
+1. Using a smaller instance type for development
+2. Stopping the instance when not in use
+3. Setting up auto-scaling for production workloads

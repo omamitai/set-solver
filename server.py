@@ -32,6 +32,8 @@ import base64
 import io
 import os
 import logging
+import sys
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO,
@@ -228,7 +230,7 @@ def locate_all_sets(cards_df):
     return found_sets
 
 def draw_set_indicators(img, sets):
-    """Simple drawing of SET indicators"""
+    """Draw SET indicators on the image"""
     result = img.copy()
     colors = [(0, 0, 255), (0, 255, 0), (255, 0, 255), (0, 255, 255), (255, 255, 0)]
     
@@ -242,11 +244,21 @@ def draw_set_indicators(img, sets):
 
 @app.route('/')
 def index():
+    """Root endpoint to check if server is running"""
     return "SET Game Detector EC2 Server is running. Use /detect-sets to analyze an image."
+
+@app.route('/health')
+def health():
+    """Health check endpoint"""
+    if model_shape is None or model_fill is None or detector_card is None or detector_shape is None:
+        return jsonify({"status": "error", "message": "Models not loaded"}), 500
+    return jsonify({"status": "healthy", "message": "Server is running and models are loaded"})
 
 @app.route('/detect-sets', methods=['POST'])
 def detect_sets():
     """Endpoint to detect SETs in an uploaded image"""
+    start_time = time.time()
+    
     if 'file' not in request.files:
         return jsonify({"success": False, "error": "No file part"}), 400
         
@@ -287,22 +299,40 @@ def detect_sets():
         _, buffer = cv2.imencode('.jpg', final_image)
         img_base64 = base64.b64encode(buffer).decode('utf-8')
         
+        processing_time = time.time() - start_time
+        logger.info(f"Processing completed in {processing_time:.2f} seconds")
+        
         return jsonify({
             "success": True,
             "setCount": len(found_sets),
             "image": f"data:image/jpeg;base64,{img_base64}",
-            "sets": found_sets
+            "sets": found_sets,
+            "processingTime": f"{processing_time:.2f}"
         })
     except Exception as e:
         logger.exception("Error processing image")
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({
+            "success": False, 
+            "error": str(e),
+            "serverInfo": {
+                "pythonVersion": sys.version,
+                "torchVersion": torch.__version__,
+                "tfVersion": tf.__version__,
+                "gpuAvailable": torch.cuda.is_available()
+            }
+        }), 500
 
 if __name__ == "__main__":
-    # Load models before starting the server
-    load_models()
-    
-    # Get port from environment variable or use default
-    port = int(os.environ.get('PORT', 8000))
-    
-    # Run the server on all interfaces (required for EC2)
-    app.run(host='0.0.0.0', port=port, debug=False)
+    try:
+        # Load models before starting the server
+        load_models()
+        
+        # Get port from environment variable or use default
+        port = int(os.environ.get('PORT', 8000))
+        
+        logger.info(f"Starting server on port {port}")
+        # Run the server on all interfaces (required for EC2)
+        app.run(host='0.0.0.0', port=port, debug=False)
+    except Exception as e:
+        logger.critical(f"Failed to start server: {e}")
+        sys.exit(1)
