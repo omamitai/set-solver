@@ -61,86 +61,86 @@
       radial-gradient(circle at 70% 60%, rgba(239, 68, 68, 0.2) 0%, transparent 40%),
       radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.2) 0%, transparent 40%);
   }
-}
 
-.card-shadow {
-  box-shadow: 0 12px 35px -10px rgba(0,0,0,0.15);
-}
-
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px -12px rgba(0,0,0,0.2);
-}
-
-.progress-bar {
-  background: linear-gradient(90deg, hsl(var(--set-purple)), hsl(var(--set-red)), hsl(var(--set-green)));
-  background-size: 300% 300%;
-  animation: gradient 3s ease infinite;
-}
-
-.pulse-soft {
-  animation: pulse-soft 4s infinite;
-}
-
-@keyframes pulse-soft {
-  0% {
-    box-shadow: 0 0 0 0 rgba(var(--set-purple), 0.25);
+  .card-shadow {
+    box-shadow: 0 12px 35px -10px rgba(0,0,0,0.15);
   }
-  70% {
-    box-shadow: 0 0 0 10px rgba(var(--set-purple), 0);
+
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  100% {
-    box-shadow: 0 0 0 0 rgba(var(--set-purple), 0);
+
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px -12px rgba(0,0,0,0.2);
   }
-}
 
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
+  .progress-bar {
+    background: linear-gradient(90deg, hsl(var(--set-purple)), hsl(var(--set-red)), hsl(var(--set-green)));
+    background-size: 300% 300%;
+    animation: gradient 3s ease infinite;
   }
-  50% {
-    background-position: 100% 50%;
+
+  .pulse-soft {
+    animation: pulse-soft 4s infinite;
   }
-  100% {
-    background-position: 0% 50%;
+
+  @keyframes pulse-soft {
+    0% {
+      box-shadow: 0 0 0 0 rgba(var(--set-purple), 0.25);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(var(--set-purple), 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(var(--set-purple), 0);
+    }
   }
-}
 
-/* Add SET card patterns */
-.set-diamond {
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-}
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 
-.set-oval {
-  border-radius: 50% / 30%;
-}
+  /* Add SET card patterns */
+  .set-diamond {
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  }
 
-.set-squiggle {
-  border-radius: 50% 20% / 10% 40%;
-}
+  .set-oval {
+    border-radius: 50% / 30%;
+  }
 
-/* iOS style button */
-.ios-btn {
-  @apply rounded-full px-6 py-3 font-medium transition-all duration-300 bg-white/90 backdrop-blur-md text-foreground shadow-md border border-white/50;
-}
+  .set-squiggle {
+    border-radius: 50% 20% / 10% 40%;
+  }
 
-.ios-btn:hover {
-  @apply bg-white/95 transform -translate-y-1 shadow-lg;
-}
+  /* iOS style button */
+  .ios-btn {
+    @apply rounded-full px-6 py-3 font-medium transition-all duration-300 bg-white/90 backdrop-blur-md text-foreground shadow-md border border-white/50;
+  }
 
-/* SET themed buttons */
-.set-btn-purple {
-  @apply bg-set-purple/15 text-set-purple border-set-purple/30 hover:bg-set-purple/25;
-}
+  .ios-btn:hover {
+    @apply bg-white/95 transform -translate-y-1 shadow-lg;
+  }
 
-.set-btn-red {
-  @apply bg-set-red/15 text-set-red border-set-red/30 hover:bg-set-red/25;
-}
+  /* SET themed buttons */
+  .set-btn-purple {
+    @apply bg-set-purple/15 text-set-purple border-set-purple/30 hover:bg-set-purple/25;
+  }
 
-.set-btn-green {
-  @apply bg-set-green/15 text-set-green border-set-green/30 hover:bg-set-green/25;
+  .set-btn-red {
+    @apply bg-set-red/15 text-set-red border-set-red/30 hover:bg-set-red/25;
+  }
+
+  .set-btn-green {
+    @apply bg-set-green/15 text-set-green border-set-green/30 hover:bg-set-green/25;
+  }
 }
