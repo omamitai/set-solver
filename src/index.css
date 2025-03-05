@@ -7,14 +7,14 @@
 
 @layer base {
   :root {
-    --background: 220 25% 94%;
+    --background: 220 25% 91%;
     --foreground: 224 71% 4%;
 
-    /* Softer light mode colors */
-    --card: 220 25% 97%;
+    /* Softer light mode colors with warm tones */
+    --card: 35 30% 94%;
     --card-foreground: 224 71% 4%;
 
-    --popover: 220 25% 97%;
+    --popover: 35 30% 94%;
     --popover-foreground: 224 71% 4%;
 
     /* SET game colors - more vivid but still elegant */
@@ -38,8 +38,8 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 20% 82%;
-    --input: 220 20% 82%;
+    --border: 35 30% 84%;
+    --input: 35 30% 84%;
     --ring: 280 65% 55%;
 
     --radius: 1.25rem;
@@ -95,9 +95,9 @@
   body {
     @apply bg-background text-foreground transition-colors duration-300;
     background-image: 
-      radial-gradient(at 80% 20%, rgba(139, 92, 246, 0.08) 0px, transparent 60%),
-      radial-gradient(at 20% 80%, rgba(239, 68, 68, 0.08) 0px, transparent 60%),
-      radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.08) 0px, transparent 60%);
+      radial-gradient(at 80% 20%, rgba(139, 92, 246, 0.10) 0px, transparent 60%),
+      radial-gradient(at 20% 80%, rgba(239, 68, 68, 0.10) 0px, transparent 60%),
+      radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.10) 0px, transparent 60%);
     background-attachment: fixed;
   }
 }
