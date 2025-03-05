@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import ImageUploader from "@/components/ImageUploader";
 import Results from "@/components/Results";
 import Footer from "@/components/Footer";
-import { Diamond, Circle, Triangle } from "lucide-react";
+import { Diamond, Circle, Triangle, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { detectSets } from "@/core/setDetector";
 import { cn } from "@/lib/utils";
@@ -64,95 +64,119 @@ const Index: React.FC = () => {
     setFoundSets(0);
   };
 
+  const scrollToHow = () => {
+    const howSection = document.getElementById('how-it-works');
+    if (howSection) {
+      howSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
       <main className="flex-1 flex flex-col pt-20 sm:pt-24 pb-6 sm:pb-10">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          {/* Title section - Enhanced for desktop */}
-          <div className="text-center mb-6 sm:mb-10 animate-fade-in w-full max-w-3xl">
-            <div className="inline-flex items-center justify-center gap-2 bg-background/40 backdrop-blur-md rounded-full px-3 py-1 mb-2 sm:mb-4 border border-border/20 shadow-sm">
-              <Diamond className="h-3.5 w-3.5 text-set-purple" />
-              <Circle className="h-3.5 w-3.5 text-set-red" />
-              <Triangle className="h-3.5 w-3.5 text-set-green" />
+          {/* Title section with improved styling */}
+          <div className="text-center mb-6 sm:mb-12 animate-fade-in w-full max-w-3xl pt-4 sm:pt-8">
+            <div className="inline-flex items-center justify-center gap-2 bg-background/50 backdrop-blur-md rounded-full px-3 py-1 mb-3 sm:mb-5 border border-border/30 shadow-sm">
+              <Diamond className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-purple" />
+              <Circle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-red" />
+              <Triangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-set-green" />
             </div>
-            <h1 className="text-xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 sm:mb-4 leading-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-3 sm:mb-5 leading-tight">
               SET Game Detector
             </h1>
-            <p className="text-xs sm:text-sm md:text-base text-muted-foreground max-w-md mx-auto">
-              Upload an image of your SET card game layout and we'll identify all valid sets for you.
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-4">
+              Upload an image of your SET card game layout and we'll identify all valid sets for you using AI.
             </p>
             
             {isMockMode && (
-              <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
+              <div className="mt-2 mb-4 p-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-sm mx-auto text-[11px] sm:text-xs">
                 ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
               </div>
             )}
+            
+            <div className="hidden sm:block">
+              <button
+                onClick={scrollToHow}
+                className="mt-4 flex flex-col items-center gap-1 text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors mx-auto"
+                aria-label="Learn how it works"
+              >
+                <span>Learn how it works</span>
+                <ChevronDown className="h-4 w-4 animate-bounce" />
+              </button>
+            </div>
           </div>
 
-          {/* Main content area - Better spacing for desktop */}
-          <div className="w-full mb-8 sm:mb-14">
-            {!imageUrl ? (
-              <ImageUploader 
-                onImageSelected={handleImageSelected} 
-                isProcessing={isProcessing}
-              />
-            ) : (
-              <Results 
-                imageUrl={imageUrl}
-                processedImageUrl={processedImageUrl}
-                isProcessing={isProcessing}
-                onReset={handleReset}
-                foundSets={foundSets}
-              />
+          {/* Main content area with better spacing for desktop */}
+          <div className="w-full mb-14 sm:mb-16 bg-background/30 backdrop-blur-sm rounded-2xl border border-border/30 shadow-md p-5 sm:p-8 relative overflow-hidden">
+            <div className="set-card-pattern opacity-10"></div>
+            <div className="relative z-10">
+              {!imageUrl ? (
+                <ImageUploader 
+                  onImageSelected={handleImageSelected} 
+                  isProcessing={isProcessing}
+                />
+              ) : (
+                <Results 
+                  imageUrl={imageUrl}
+                  processedImageUrl={processedImageUrl}
+                  isProcessing={isProcessing}
+                  onReset={handleReset}
+                  foundSets={foundSets}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* How It Works section - properly pushed below the fold */}
+          <div 
+            id="how-it-works"
+            className={cn(
+              "w-full animate-fade-in mt-16 sm:mt-24 pt-4",
+              "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-8 sm:before:mb-10"
             )}
-          </div>
-
-          {/* How It Works section - Properly pushed below the fold */}
-          <div className={cn(
-            "w-full animate-fade-in mt-12 sm:mt-20 pt-4",
-            "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-6 sm:before:mb-8"
-          )}>
-            <h2 className="text-base sm:text-xl font-semibold mb-4 sm:mb-6 text-center">
+          >
+            <h2 className="text-lg sm:text-2xl font-semibold mb-6 sm:mb-8 text-center">
               How It Works
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
               {[
                 {
                   title: "Upload Image",
-                  description: "Take a photo of your SET game layout and upload it.",
+                  description: "Take a photo of your SET game layout and upload it to our secure server.",
                   icon: "diamond"
                 },
                 {
                   title: "AI Detection",
-                  description: "Our AI analyzes the image to identify all cards and their attributes.",
+                  description: "Our computer vision AI analyzes the image to identify all cards and their attributes.",
                   icon: "circle"
                 },
                 {
                   title: "View Results",
-                  description: "See all valid sets highlighted directly on your image.",
+                  description: "See all valid sets highlighted directly on your image with detailed explanations.",
                   icon: "triangle"
                 }
               ].map((step, index) => (
-                <div key={index} className="rounded-xl ios-card hover-lift p-3 sm:p-5 relative overflow-hidden">
+                <div key={index} className="rounded-xl ios-card hover-lift p-4 sm:p-6 relative overflow-hidden">
                   <div className="set-card-pattern opacity-20"></div>
                   <div className="flex flex-col items-center text-center relative z-10">
                     <div className={cn(
-                      "w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg shadow-sm mb-2 sm:mb-3",
-                      step.icon === "diamond" ? "bg-set-purple/10 set-diamond" : 
-                      step.icon === "circle" ? "bg-set-red/10 set-oval" : 
-                      "bg-set-green/10"
+                      "w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-lg shadow-sm mb-3 sm:mb-4",
+                      step.icon === "diamond" ? "bg-set-purple/15 set-diamond" : 
+                      step.icon === "circle" ? "bg-set-red/15 set-oval" : 
+                      "bg-set-green/15"
                     )}>
                       {step.icon === "diamond" ? (
-                        <Diamond className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-set-purple opacity-80" />
+                        <Diamond className="h-4 w-4 sm:h-6 sm:w-6 text-set-purple opacity-80" />
                       ) : step.icon === "circle" ? (
-                        <Circle className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-set-red opacity-80" />
+                        <Circle className="h-4 w-4 sm:h-6 sm:w-6 text-set-red opacity-80" />
                       ) : (
-                        <Triangle className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-set-green opacity-80" />
+                        <Triangle className="h-4 w-4 sm:h-6 sm:w-6 text-set-green opacity-80" />
                       )}
                     </div>
-                    <h3 className="text-sm sm:text-base font-medium mb-1 sm:mb-2">
+                    <h3 className="text-base sm:text-lg font-medium mb-2 sm:mb-3">
                       {step.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-muted-foreground">
