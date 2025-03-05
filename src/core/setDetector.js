@@ -42,9 +42,9 @@ const awsDetectSets = async (imageFile) => {
     // Get the AWS API Gateway endpoint from environment variables
     const endpoint = process.env.REACT_APP_AWS_API_ENDPOINT;
     
-    if (!endpoint) {
-      console.error("AWS API endpoint not configured in environment variables");
-      throw new Error("API endpoint not configured");
+    if (!endpoint || endpoint === "https://your-api-gateway-id.execute-api.your-region.amazonaws.com/prod/detect-sets") {
+      console.error("AWS API endpoint not correctly configured in environment variables:", endpoint);
+      throw new Error("API endpoint not correctly configured - still has placeholder value");
     }
     
     console.log("Calling AWS endpoint:", endpoint);
@@ -55,7 +55,9 @@ const awsDetectSets = async (imageFile) => {
     });
     
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      const errorText = await response.text();
+      console.error(`API request failed with status ${response.status}:`, errorText);
+      throw new Error(`API request failed with status ${response.status}: ${errorText}`);
     }
     
     const result = await response.json();
@@ -66,7 +68,7 @@ const awsDetectSets = async (imageFile) => {
     console.error("Error calling AWS SET detection API:", error);
     return {
       success: false,
-      error: "Failed to connect to SET detection service. Please try again."
+      error: `Failed to connect to SET detection service: ${error.message}. Please check your API configuration.`
     };
   }
 };
