@@ -6,16 +6,7 @@ This file provides the backend server for SET detection using Flask.
 It should be deployed on an EC2 instance.
 
 To run:
-    python server.py
-
-Requirements (see requirements.txt):
-- Flask
-- Flask-CORS
-- OpenCV
-- NumPy
-- TensorFlow
-- PyTorch
-- Ultralytics (YOLO)
+    gunicorn --bind 0.0.0.0:8000 server:app
 """
 
 from flask import Flask, request, jsonify
@@ -34,10 +25,18 @@ import os
 import logging
 import sys
 import time
+import pandas as pd
+import traceback
 
 # Configure logging
-logging.basicConfig(level=logging.INFO,
-                   format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("set_detector.log")
+    ]
+)
 logger = logging.getLogger(__name__)
 
 # Initialize Flask app
@@ -54,60 +53,65 @@ def load_models():
     """Load all required models for SET detection"""
     global model_shape, model_fill, detector_card, detector_shape
     
-    logger.info("Loading models...")
-    base_dir = Path("models")
-    
-    # Check if models directory exists
-    if not base_dir.exists():
-        logger.error(f"Models directory not found: {base_dir}")
-        raise FileNotFoundError(f"Models directory not found: {base_dir}")
-    
-    char_path = base_dir / "Characteristics" / "11022025"
-    shape_path = base_dir / "Shape" / "15052024" 
-    card_path = base_dir / "Card" / "16042024"
-    
-    # Load classification models
-    if (char_path / "shape_model.keras").exists():
-        logger.info("Loading shape model...")
-        model_shape = load_model(str(char_path / "shape_model.keras"))
-    else:
-        logger.error(f"Shape model not found at {char_path / 'shape_model.keras'}")
-        raise FileNotFoundError(f"Shape model not found")
+    try:
+        logger.info("Loading models...")
+        base_dir = Path("models")
         
-    if (char_path / "fill_model.keras").exists():
-        logger.info("Loading fill model...")
-        model_fill = load_model(str(char_path / "fill_model.keras"))
-    else:
-        logger.error(f"Fill model not found at {char_path / 'fill_model.keras'}")
-        raise FileNotFoundError(f"Fill model not found")
-    
-    # Load detection models
-    if (shape_path / "best.pt").exists():
-        logger.info("Loading shape detector...")
-        detector_shape = YOLO(str(shape_path / "best.pt"))
-        detector_shape.conf = 0.5
-    else:
-        logger.error(f"Shape detector not found at {shape_path / 'best.pt'}")
-        raise FileNotFoundError(f"Shape detector not found")
+        # Check if models directory exists
+        if not base_dir.exists():
+            logger.error(f"Models directory not found: {base_dir}")
+            raise FileNotFoundError(f"Models directory not found: {base_dir}")
         
-    if (card_path / "best.pt").exists():
-        logger.info("Loading card detector...")
-        detector_card = YOLO(str(card_path / "best.pt"))
-        detector_card.conf = 0.5
-    else:
-        logger.error(f"Card detector not found at {card_path / 'best.pt'}")
-        raise FileNotFoundError(f"Card detector not found")
+        char_path = base_dir / "Characteristics" / "11022025"
+        shape_path = base_dir / "Shape" / "15052024" 
+        card_path = base_dir / "Card" / "16042024"
         
-    # Use GPU if available
-    if torch.cuda.is_available():
-        logger.info("CUDA available, using GPU")
-        detector_card.to("cuda")
-        detector_shape.to("cuda")
-    else:
-        logger.info("CUDA not available, using CPU")
+        # Load classification models
+        if (char_path / "shape_model.keras").exists():
+            logger.info("Loading shape model...")
+            model_shape = load_model(str(char_path / "shape_model.keras"))
+        else:
+            logger.error(f"Shape model not found at {char_path / 'shape_model.keras'}")
+            raise FileNotFoundError(f"Shape model not found")
+            
+        if (char_path / "fill_model.keras").exists():
+            logger.info("Loading fill model...")
+            model_fill = load_model(str(char_path / "fill_model.keras"))
+        else:
+            logger.error(f"Fill model not found at {char_path / 'fill_model.keras'}")
+            raise FileNotFoundError(f"Fill model not found")
         
-    logger.info("All models loaded successfully")
-    return True
+        # Load detection models
+        if (shape_path / "best.pt").exists():
+            logger.info("Loading shape detector...")
+            detector_shape = YOLO(str(shape_path / "best.pt"))
+            detector_shape.conf = 0.5
+        else:
+            logger.error(f"Shape detector not found at {shape_path / 'best.pt'}")
+            raise FileNotFoundError(f"Shape detector not found")
+            
+        if (card_path / "best.pt").exists():
+            logger.info("Loading card detector...")
+            detector_card = YOLO(str(card_path / "best.pt"))
+            detector_card.conf = 0.5
+        else:
+            logger.error(f"Card detector not found at {card_path / 'best.pt'}")
+            raise FileNotFoundError(f"Card detector not found")
+            
+        # Use GPU if available
+        if torch.cuda.is_available():
+            logger.info("CUDA available, using GPU")
+            detector_card.to("cuda")
+            detector_shape.to("cuda")
+        else:
+            logger.info("CUDA not available, using CPU")
+            
+        logger.info("All models loaded successfully")
+        return True
+    except Exception as e:
+        logger.error(f"Error loading models: {str(e)}")
+        logger.error(traceback.format_exc())
+        return False
 
 # Core SET detection functions
 def correct_orientation(board_image, card_detector):
@@ -195,7 +199,6 @@ def predict_card_features(card_img, shape_detector, fill_model, shape_model, car
 
 def classify_cards_on_board(board_img, card_detector, shape_detector, fill_model, shape_model):
     """Detect and classify all cards on the board"""
-    import pandas as pd
     card_rows = []
     for card_img, box in detect_cards(board_img, card_detector):
         card_feats = predict_card_features(card_img, shape_detector, fill_model, shape_model, box)
@@ -325,7 +328,9 @@ def detect_sets():
 if __name__ == "__main__":
     try:
         # Load models before starting the server
-        load_models()
+        if not load_models():
+            logger.critical("Failed to load models, exiting")
+            sys.exit(1)
         
         # Get port from environment variable or use default
         port = int(os.environ.get('PORT', 8000))
@@ -335,4 +340,5 @@ if __name__ == "__main__":
         app.run(host='0.0.0.0', port=port, debug=False)
     except Exception as e:
         logger.critical(f"Failed to start server: {e}")
+        logger.critical(traceback.format_exc())
         sys.exit(1)

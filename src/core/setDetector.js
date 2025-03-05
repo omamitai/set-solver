@@ -7,6 +7,7 @@
 
 // Read environment variables properly
 const USE_MOCK_DATA = process.env.REACT_APP_USE_MOCK_DATA === 'true';
+const API_ENDPOINT = process.env.REACT_APP_AWS_API_ENDPOINT || process.env.REACT_APP_EC2_SERVER_URL;
 
 // Frontend-only mock implementation (for development)
 const mockDetectSets = async (imageFile) => {
@@ -33,50 +34,28 @@ const mockDetectSets = async (imageFile) => {
   }
 };
 
-// EC2 backend implementation
-const ec2DetectSets = async (imageFile) => {
+// Backend implementation (EC2 or AWS Lambda)
+const backendDetectSets = async (imageFile) => {
   const formData = new FormData();
   formData.append('file', imageFile);
   
   try {
-    // Get the EC2 server endpoint from environment variables
-    const endpoint = process.env.REACT_APP_EC2_SERVER_URL;
-    
-    if (!endpoint || endpoint === "http://your-ec2-instance-public-dns:8000/detect-sets") {
-      console.error("EC2 server URL not correctly configured in environment variables:", endpoint);
-      throw new Error("EC2 server URL not correctly configured - still has placeholder value. Please update your .env file with the correct URL.");
+    if (!API_ENDPOINT) {
+      console.error("Backend API endpoint not configured in environment variables");
+      throw new Error("Backend server URL not configured. Please update your .env file with either REACT_APP_EC2_SERVER_URL or REACT_APP_AWS_API_ENDPOINT.");
     }
     
-    console.log("Calling EC2 server:", endpoint);
+    console.log("Calling backend API:", API_ENDPOINT);
     
-    // First test if the server is reachable with a timeout
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-      
-      const healthResponse = await fetch(endpoint.replace('/detect-sets', '/health'), {
-        signal: controller.signal
-      }).catch(() => null);
-      
-      clearTimeout(timeoutId);
-      
-      if (!healthResponse || !healthResponse.ok) {
-        console.warn("EC2 server health check failed, but will still try to process the request");
-      }
-    } catch (error) {
-      console.warn("EC2 server health check failed, but will still try to process the request:", error.message);
-    }
-    
-    // Set a longer timeout for the actual request
+    // Set a timeout for the request
     const requestTimeout = 30000; // 30 seconds
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), requestTimeout);
     
-    const response = await fetch(endpoint, {
+    const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       body: formData,
       signal: controller.signal
-      // No need to set Content-Type as it's automatically set with FormData
     });
     
     clearTimeout(timeoutId);
@@ -88,31 +67,31 @@ const ec2DetectSets = async (imageFile) => {
     }
     
     const result = await response.json();
-    console.log("EC2 server response:", result);
+    console.log("Backend response:", result);
     
     return result;
   } catch (error) {
-    console.error("Error calling EC2 SET detection API:", error);
+    console.error("Error calling SET detection API:", error);
     
     // Provide more helpful error messages based on error type
     if (error.name === 'AbortError') {
       return {
         success: false,
-        error: "Request timed out. The EC2 server took too long to respond. Please check your server and try again."
+        error: "Request timed out. The backend server took too long to respond. Please check your server and try again."
       };
     } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
       return {
         success: false,
-        error: "Network error: Could not connect to the EC2 server. Please check that your server is running and your EC2_SERVER_URL is correct."
+        error: "Network error: Could not connect to the backend server. Please check that your server is running and your API endpoint is correct."
       };
     }
     
     return {
       success: false,
-      error: `Failed to connect to SET detection service: ${error.message}. Please check your EC2 server configuration.`
+      error: `Failed to connect to SET detection service: ${error.message}. Please check your backend configuration.`
     };
   }
 };
 
 // Export the appropriate function based on configuration
-export const detectSets = USE_MOCK_DATA ? mockDetectSets : ec2DetectSets;
+export const detectSets = USE_MOCK_DATA ? mockDetectSets : backendDetectSets;

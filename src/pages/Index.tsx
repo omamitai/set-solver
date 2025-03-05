@@ -16,11 +16,20 @@ const Index: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [foundSets, setFoundSets] = useState(0);
   const [isMockMode, setIsMockMode] = useState(false);
+  const [apiEndpoint, setApiEndpoint] = useState<string | null>(null);
 
   useEffect(() => {
-    setIsMockMode(process.env.REACT_APP_USE_MOCK_DATA === 'true');
-    console.log("Mock mode:", process.env.REACT_APP_USE_MOCK_DATA);
-    console.log("API endpoint:", process.env.REACT_APP_AWS_API_ENDPOINT);
+    // Determine if we're in mock mode
+    const useMockData = process.env.REACT_APP_USE_MOCK_DATA === 'true';
+    setIsMockMode(useMockData);
+    
+    // Get the API endpoint (either EC2 or AWS API Gateway)
+    const endpoint = process.env.REACT_APP_AWS_API_ENDPOINT || process.env.REACT_APP_EC2_SERVER_URL;
+    setApiEndpoint(endpoint);
+    
+    console.log("Environment:", process.env.NODE_ENV);
+    console.log("Mock mode:", useMockData);
+    console.log("API endpoint:", endpoint);
   }, []);
 
   const handleImageSelected = async (image: File) => {
@@ -81,6 +90,12 @@ const Index: React.FC = () => {
             {isMockMode && (
               <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
                 ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
+              </div>
+            )}
+            
+            {!isMockMode && !apiEndpoint && (
+              <div className="mt-2 p-1.5 bg-red-100 text-red-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
+                ⚠️ Backend API endpoint not configured. Check your environment variables.
               </div>
             )}
           </div>
