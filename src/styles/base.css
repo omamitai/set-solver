@@ -1,0 +1,24 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border selection:bg-primary/15 selection:text-primary;
+  }
+  
+  html {
+    @apply scroll-smooth antialiased;
+    font-family: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    background-image: 
+      radial-gradient(at 80% 20%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+      radial-gradient(at 20% 80%, rgba(239, 68, 68, 0.08) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+}
