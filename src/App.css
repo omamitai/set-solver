@@ -5,3 +5,137 @@
   padding: 0;
   text-align: center;
 }
+
+/* Enhanced iOS-inspired styling with more prominent visuals */
+.ios-card {
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px -10px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ios-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.25);
+}
+
+/* SET game patterns - more visible */
+.set-pattern {
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(216, 180, 254, 0.15) 0%, rgba(216, 180, 254, 0) 90%),
+    radial-gradient(circle at 80% 80%, rgba(249, 168, 212, 0.15) 0%, rgba(249, 168, 212, 0) 90%),
+    radial-gradient(circle at 40% 60%, rgba(167, 243, 208, 0.15) 0%, rgba(167, 243, 208, 0) 90%);
+}
+
+/* Enhanced background pattern */
+.bg-set-gradient {
+  background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(240,240,245,0.9) 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 15s ease infinite;
+}
+
+.dark .bg-set-gradient {
+  background: linear-gradient(135deg, rgba(30,30,35,0.8) 0%, rgba(20,20,25,0.9) 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
+/* SET card patterns - more visible */
+.set-card-pattern {
+  @apply absolute inset-0 opacity-15 pointer-events-none;
+  background-image: 
+    radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(239, 68, 68, 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.2) 0%, transparent 40%);
+}
+
+/* Enhanced card shadow */
+.card-shadow {
+  box-shadow: 0 12px 35px -10px rgba(0,0,0,0.15);
+}
+
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px -12px rgba(0,0,0,0.2);
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, hsl(var(--set-purple)), hsl(var(--set-red)), hsl(var(--set-green)));
+  background-size: 300% 300%;
+  animation: gradient 3s ease infinite;
+}
+
+.pulse-soft {
+  animation: pulse-soft 4s infinite;
+}
+
+@keyframes pulse-soft {
+  0% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.25);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Enhanced SET card patterns */
+.set-diamond {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.set-oval {
+  border-radius: 50% / 30%;
+}
+
+.set-squiggle {
+  border-radius: 50% 20% / 10% 40%;
+}
+
+/* Enhanced iOS style button */
+.ios-btn {
+  @apply rounded-full px-6 py-3 font-medium transition-all duration-300 bg-white/90 backdrop-blur-md text-foreground shadow-md border border-white/50;
+}
+
+.ios-btn:hover {
+  @apply bg-white/95 transform -translate-y-1 shadow-lg;
+}
+
+/* Enhanced SET themed buttons */
+.set-btn-purple {
+  @apply bg-set-purple/15 text-set-purple border-set-purple/30 hover:bg-set-purple/25;
+}
+
+.set-btn-red {
+  @apply bg-set-red/15 text-set-red border-set-red/30 hover:bg-set-red/25;
+}
+
+.set-btn-green {
+  @apply bg-set-green/15 text-set-green border-set-green/30 hover:bg-set-green/25;
+}
