@@ -20,26 +20,28 @@ const Results: React.FC<ResultsProps> = ({
   if (!imageUrl) return null;
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-4 sm:mt-8 animate-slide-up">
-      <Card className="overflow-hidden ios-card card-shadow">
+    <div className="w-full max-w-4xl mx-auto mt-6 sm:mt-10 animate-slide-up">
+      <Card className="overflow-hidden rounded-3xl border-0 shadow-lg bg-set-gradient backdrop-blur-sm">
         <CardContent className="p-0">
           <div className="relative">
             {isProcessing && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-10">
-                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-4 border-primary border-t-transparent animate-spin mb-3 sm:mb-4"></div>
-                <p className="text-foreground text-sm sm:text-base font-medium">Processing image...</p>
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-10 rounded-3xl">
+                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full border-4 border-primary border-t-transparent animate-spin mb-4 sm:mb-6"></div>
+                <p className="text-foreground text-base sm:text-lg font-medium bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Processing image...
+                </p>
               </div>
             )}
             <img
               src={imageUrl}
               alt="Set game"
               className={cn(
-                "w-full h-auto object-contain max-h-[50vh] sm:max-h-[70vh]",
+                "w-full h-auto object-contain max-h-[50vh] sm:max-h-[70vh] rounded-3xl",
                 isProcessing ? "filter blur-sm" : "filter-none transition-all duration-500"
               )}
             />
             {!isProcessing && (
-              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 ios-card px-3 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium">
+              <div className="absolute top-4 right-4 sm:top-5 sm:right-5 bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-md px-4 py-2 sm:px-5 sm:py-3 text-sm sm:text-base font-semibold text-white rounded-full shadow-lg">
                 Found: {foundSets} {foundSets === 1 ? "set" : "sets"}
               </div>
             )}
@@ -47,11 +49,11 @@ const Results: React.FC<ResultsProps> = ({
         </CardContent>
       </Card>
 
-      <div className="flex justify-center mt-4 sm:mt-6">
+      <div className="flex justify-center mt-6 sm:mt-8">
         <Button
           onClick={onReset}
           variant="outline"
-          className="hover-lift ios-button text-sm"
+          className="hover-lift ios-button text-sm sm:text-base font-medium px-6 py-2 h-auto border-primary/20 hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/10"
           disabled={isProcessing}
         >
           Try Another Image

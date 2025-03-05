@@ -33,26 +33,26 @@ const Header: React.FC = () => {
       )}
     >
       <div className="animate-fade-in flex items-center gap-2">
-        <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/20 flex items-center justify-center">
+        <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/20 flex items-center justify-center pulse-soft">
           <span className="text-primary font-bold text-base sm:text-lg">S</span>
         </div>
-        <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
+        <h1 className="text-lg sm:text-xl font-semibold tracking-tight bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
           Set Game Detector
         </h1>
       </div>
 
       <div className="flex items-center gap-3">
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
           onClick={toggleTheme}
-          className="rounded-full w-8 h-8 sm:w-10 sm:h-10 animate-fade-in transition-all hover:bg-background/80 glass glass-dark"
+          className="rounded-full w-8 h-8 sm:w-10 sm:h-10 animate-fade-in transition-all hover:bg-background/80 glass glass-dark border-primary/10"
           aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
         >
           {theme === "dark" ? (
-            <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Sun className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           ) : (
-            <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <Moon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
           )}
         </Button>
       </div>

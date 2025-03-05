@@ -44,13 +44,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
   };
 
   const validateAndProcessFile = (file: File) => {
-    // Check if file is an image
     if (!file.type.match('image.*')) {
       toast.error('Please upload an image file');
       return;
     }
 
-    // Check file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       toast.error('File is too large. Maximum size is 10MB');
       return;
@@ -67,8 +65,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
     <div 
       className={cn(
         "w-full max-w-xl mx-auto animate-scale-in transition-all duration-300",
-        "rounded-2xl border-2 border-dashed p-5 sm:p-8 text-center ios-card",
-        dragActive ? "border-primary bg-primary/5" : "border-border",
+        "rounded-3xl border-2 border-dashed p-6 sm:p-10 text-center",
+        "bg-set-gradient backdrop-blur-sm shadow-lg",
+        dragActive 
+          ? "border-primary/70 bg-primary/5 scale-[1.02]" 
+          : "border-border/50 scale-100",
         isProcessing ? "opacity-50 pointer-events-none" : "opacity-100"
       )}
       onDragEnter={handleDrag}
@@ -76,13 +77,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
       onDragOver={handleDrag}
       onDrop={handleDrop}
     >
-      <div className="flex flex-col items-center justify-center gap-3 sm:gap-4">
-        <div className="rounded-full bg-primary/10 p-3">
-          <ArrowUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+      <div className="flex flex-col items-center justify-center gap-4 sm:gap-6">
+        <div className="rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 p-4 shadow-inner">
+          <ArrowUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
         </div>
-        <div className="space-y-1 sm:space-y-2">
-          <h3 className="text-base sm:text-lg font-medium">Upload your Set game image</h3>
-          <p className="text-xs sm:text-sm text-muted-foreground">
+        <div className="space-y-2 sm:space-y-3">
+          <h3 className="text-base sm:text-xl md:text-2xl font-medium bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            Upload your Set game image
+          </h3>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">
             Drag and drop your image here, or tap to browse
           </p>
           <p className="text-xs text-muted-foreground">
@@ -91,7 +94,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected, isProces
         </div>
         <Button
           onClick={handleButtonClick}
-          className="mt-1 sm:mt-2 ios-button hover-lift"
+          className="mt-2 sm:mt-3 ios-button hover-lift px-6 py-2 h-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
           disabled={isProcessing}
         >
           Select Image
