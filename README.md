@@ -26,50 +26,112 @@ set-game-detector/
 │   ├── components/       # Reusable UI components
 │   ├── context/          # React context providers
 │   ├── core/             # SET detection logic
+│   │   └── setDetector.js # Frontend wrapper for SET detection
 │   ├── lib/              # Utility functions
 │   ├── pages/            # Main application pages
 │   └── ...
-├── models/               # ML models (added during deployment)
-│   ├── Characteristics/
-│   │   └── 11022025/     # Shape and fill models
-│   ├── Shape/
-│   │   └── 15052024/     # Shape detection models
-│   └── Card/
-│       └── 16042024/     # Card detection models
-└── python/               # Python backend (for production)
-    └── app.py            # SET detection server
+├── python/               # Python backend reference implementation
+│   └── app.py            # SET detection server
+└── models/               # ML models (added during deployment)
+    ├── Characteristics/
+    │   └── 11022025/     # Shape and fill models
+    ├── Shape/
+    │   └── 15052024/     # Shape detection models
+    └── Card/
+        └── 16042024/     # Card detection models
 ```
 
-## Deployment
+## Deployment Options
 
-### Standard Web Deployment
+This application can be deployed in several ways depending on your needs:
 
-1. Clone this repository
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Build the project:
+### Option 1: Frontend-Only (Demo Mode)
+
+The simplest deployment option uses mock data to simulate SET detection:
+
+1. Build the React app:
    ```
    npm run build
    ```
-4. Deploy the contents of the `dist` folder to your web hosting service
+2. Deploy the contents of the `dist` folder to any static hosting service:
+   - Vercel
+   - Netlify
+   - GitHub Pages
+   - Any web hosting service
 
-### Backend Setup for SET Detection
+In this mode, the app will show a working UI but won't perform actual SET detection.
 
-For the actual SET detection functionality, you'll need to deploy a Python backend:
+### Option 2: Full-Stack Solution (Recommended for Production)
 
-1. Place the Python backend code in a separate repository or service
-2. Set up an API endpoint that accepts image uploads and runs the SET detection
-3. Update the `src/core/setDetector.js` file to make actual API calls to your backend
+For a complete working solution with real SET detection:
 
-#### Model Setup
+#### Method A: Separate Frontend & Backend Deployment
 
-Place your trained models in these directories:
-- `models/Characteristics/11022025/shape_model.keras` - For shape classification
-- `models/Characteristics/11022025/fill_model.keras` - For fill pattern classification
-- `models/Shape/15052024/best.pt` - YOLO model for shape detection
-- `models/Card/16042024/best.pt` - YOLO model for card detection
+1. **Deploy the React Frontend:**
+   - Build and deploy as described in Option 1
+
+2. **Deploy the Python Backend:**
+   - Use a Python-compatible hosting service:
+     - Heroku
+     - PythonAnywhere
+     - Google Cloud Run
+     - AWS Lambda + API Gateway
+   - Install dependencies:
+     ```
+     pip install tensorflow torch ultralytics opencv-python fastapi uvicorn
+     ```
+   - Upload your ML models to the server
+   - Deploy the Python backend (see python/app.py for reference)
+
+3. **Connect Frontend to Backend:**
+   - Update `src/core/setDetector.js` to call your backend API
+
+#### Method B: Single-Server Deployment
+
+Deploy both frontend and backend on a single server:
+
+1. Set up a server with both Node.js and Python:
+   - AWS EC2
+   - DigitalOcean Droplet
+   - Any VPS provider
+
+2. Configure the server:
+   - Use Nginx to serve the React frontend files
+   - Run the Python backend as a service using Gunicorn or Uvicorn
+   - Set up proper routing in Nginx to forward API requests to the Python service
+
+#### Method C: Containerized Deployment (Advanced)
+
+Package everything in Docker containers:
+
+1. Create Dockerfiles for both frontend and backend
+2. Use Docker Compose to run both services together
+3. Deploy to a container orchestration platform:
+   - Kubernetes
+   - AWS ECS
+   - Google Cloud Run
+   - Azure Container Apps
+
+## Setting Up the ML Models
+
+The SET detection algorithms require specific machine learning models:
+
+1. Create a `models` directory in your Python backend with this structure:
+   ```
+   models/
+   ├── Characteristics/
+   │   └── 11022025/
+   │       └── shape_model.keras
+   │       └── fill_model.keras
+   ├── Shape/
+   │   └── 15052024/
+   │       └── best.pt
+   └── Card/
+       └── 16042024/
+           └── best.pt
+   ```
+
+2. Place your trained models in these locations, or use publicly available models
 
 ## Development
 
@@ -78,13 +140,6 @@ To start the development server:
 ```
 npm run dev
 ```
-
-## Design Principles
-
-- **iOS-inspired**: Clean, minimal interface with frosted glass effects and subtle shadows
-- **SET-themed**: Color palette based on the classic SET game colors (purple, red, green)
-- **Responsive**: Fully functional across all device sizes
-- **Accessible**: High contrast elements and readable text
 
 ## License
 
