@@ -18,15 +18,13 @@ const Index: React.FC = () => {
     setImageUrl(URL.createObjectURL(image));
     setIsProcessing(true);
 
-    // Simulate processing
+    // In a real implementation with Streamlit integration
+    // we would send the image to the backend here
     setTimeout(() => {
-      // In a real implementation, this would call the API with the image
-      // and get back the results
-      setIsProcessing(false);
-      
       // Simulate finding random number of sets (1-6)
       const randomSets = Math.floor(Math.random() * 6) + 1;
       setFoundSets(randomSets);
+      setIsProcessing(false);
       
       toast.success(`Found ${randomSets} sets in the image!`);
     }, 3000);
@@ -48,8 +46,8 @@ const Index: React.FC = () => {
     const shapeClass = type === 'diamond' ? 'set-diamond' : type === 'circle' ? 'set-oval' : '';
     
     return (
-      <div className={`w-12 h-12 sm:w-14 sm:h-14 ${bgColor} ${shapeClass} flex items-center justify-center rounded-md`}>
-        <IconComponent className={`h-6 w-6 sm:h-7 sm:w-7 ${textColor}`} />
+      <div className={`w-12 h-12 sm:w-14 sm:h-14 ${bgColor} ${shapeClass} flex items-center justify-center rounded-xl shadow-sm`}>
+        <IconComponent className={`h-6 w-6 sm:h-7 sm:w-7 ${textColor} opacity-80`} />
       </div>
     );
   };
@@ -63,11 +61,11 @@ const Index: React.FC = () => {
           {/* Main content with sufficient padding to avoid overlap with fixed header */}
           <div className="text-center mb-8 sm:mb-12 md:mb-16 animate-fade-in px-4 pt-6 sm:pt-4">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Diamond className="h-6 w-6 text-set-purple" />
-              <Circle className="h-6 w-6 text-set-red" />
-              <Triangle className="h-6 w-6 text-set-green" />
+              <Diamond className="h-6 w-6 text-set-purple opacity-80" />
+              <Circle className="h-6 w-6 text-set-red opacity-80" />
+              <Triangle className="h-6 w-6 text-set-green opacity-80" />
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 sm:mb-6 ios-text-gradient leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 sm:mb-6 leading-tight">
               SET Game Detector
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -90,7 +88,7 @@ const Index: React.FC = () => {
           )}
 
           <div className="mt-14 sm:mt-20 animate-fade-in px-4">
-            <h2 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 text-center ios-text-gradient">
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 text-center">
               How It Works
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-7">
@@ -111,11 +109,11 @@ const Index: React.FC = () => {
                   icon: "triangle"
                 }
               ].map((step, index) => (
-                <div key={index} className="rounded-3xl bg-background/50 backdrop-blur-sm p-6 sm:p-8 hover-lift shadow-md border border-border/10 ios-shadow relative overflow-hidden group">
-                  <div className="set-card-pattern opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
-                  <div className="flex flex-col items-center text-center">
+                <div key={index} className="rounded-2xl ios-card hover-lift p-6 sm:p-8 relative overflow-hidden">
+                  <div className="set-card-pattern"></div>
+                  <div className="flex flex-col items-center text-center relative z-10">
                     <SetIcon type={step.icon as 'diamond' | 'circle' | 'triangle'} />
-                    <h3 className="text-lg sm:text-xl font-medium mt-4 mb-2 sm:mb-3 ios-text-gradient">
+                    <h3 className="text-lg sm:text-xl font-medium mt-4 mb-2 sm:mb-3">
                       {step.title}
                     </h3>
                     <p className="text-muted-foreground text-sm sm:text-base">

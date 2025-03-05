@@ -16,30 +16,30 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
 
-    /* SET game colors */
-    --set-red: 350 70% 50%;
-    --set-purple: 280 60% 50%;
-    --set-green: 140 50% 45%;
+    /* SET game colors - more muted and sophisticated */
+    --set-red: 350 60% 55%;
+    --set-purple: 280 50% 55%;
+    --set-green: 140 40% 50%;
 
     /* Refined colors with SET influence */
-    --primary: 280 60% 50%; /* Purple from SET */
+    --primary: 280 50% 55%; /* Purple from SET */
     --primary-foreground: 220 25% 97%;
 
-    --secondary: 350 70% 50%; /* Red from SET */
+    --secondary: 350 60% 55%; /* Red from SET */
     --secondary-foreground: 220 25% 97%;
 
-    --accent: 140 50% 45%; /* Green from SET */
+    --accent: 140 40% 50%; /* Green from SET */
     --accent-foreground: 220 25% 97%;
 
     --muted: 220 20% 94%;
-    --muted-foreground: 220 10% 40%;
+    --muted-foreground: 220 10% 45%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 220 20% 86%;
     --input: 220 20% 86%;
-    --ring: 280 60% 50%;
+    --ring: 280 50% 55%;
 
     --radius: 1.25rem; /* iOS-like rounded corners */
   }
@@ -54,19 +54,19 @@
     --popover: 224 71% 4%;
     --popover-foreground: 220 25% 97%;
 
-    /* SET game colors in dark mode */
-    --set-red: 350 70% 60%;
-    --set-purple: 280 60% 60%;
-    --set-green: 140 50% 55%;
+    /* SET game colors in dark mode - more muted */
+    --set-red: 350 60% 60%;
+    --set-purple: 280 50% 60%;
+    --set-green: 140 40% 55%;
 
     /* Refined dark mode colors with SET influence */
-    --primary: 280 60% 60%; /* Purple from SET */
+    --primary: 280 50% 60%; /* Purple from SET */
     --primary-foreground: 220 25% 97%;
 
-    --secondary: 350 70% 60%; /* Red from SET */
+    --secondary: 350 60% 60%; /* Red from SET */
     --secondary-foreground: 220 25% 97%;
 
-    --accent: 140 50% 55%; /* Green from SET */
+    --accent: 140 40% 55%; /* Green from SET */
     --accent-foreground: 220 25% 97%;
 
     --muted: 215 28% 17%;
@@ -77,13 +77,13 @@
 
     --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 280 60% 60%;
+    --ring: 280 50% 60%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border selection:bg-primary/20 selection:text-primary;
+    @apply border-border selection:bg-primary/15 selection:text-primary;
   }
   
   html {
@@ -98,7 +98,7 @@
 
 @layer utilities {
   .glass {
-    @apply bg-background/50 backdrop-blur-xl border border-border/50 shadow-sm;
+    @apply bg-background/70 backdrop-blur-xl border border-border/50 shadow-sm;
   }
   
   .glass-dark {
@@ -114,7 +114,7 @@
   }
 
   .ios-card {
-    @apply rounded-2xl bg-white/80 dark:bg-black/30 backdrop-blur-md shadow-sm border border-white/20 dark:border-white/5;
+    @apply rounded-2xl bg-white/90 dark:bg-black/40 backdrop-blur-md shadow-sm border border-white/20 dark:border-white/5;
   }
   
   .ios-button {
@@ -122,19 +122,15 @@
   }
   
   .bg-set-gradient {
-    @apply bg-gradient-to-r from-set-purple/5 via-set-red/5 to-set-green/5;
-  }
-  
-  .bg-set-gradient-reverse {
-    @apply bg-gradient-to-l from-set-purple/5 via-set-red/5 to-set-green/5;
+    @apply bg-gradient-to-b from-white to-background dark:from-background/80 dark:to-background;
   }
   
   .ios-shadow {
-    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 30px -10px rgba(0, 0, 0, 0.1);
   }
   
   .ios-text-gradient {
-    @apply bg-gradient-to-r from-set-purple via-set-red to-set-green bg-clip-text text-transparent;
+    @apply text-foreground font-medium;
   }
   
   .set-card {
@@ -148,7 +144,7 @@
 }
 
 .card-shadow {
-  box-shadow: 0 4px 20px -4px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 25px -8px rgba(0,0,0,0.07);
 }
 
 .hover-lift {
@@ -157,13 +153,13 @@
 
 .hover-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 40px -8px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 35px -10px rgba(0,0,0,0.12);
 }
 
 .progress-bar {
   background: linear-gradient(90deg, hsl(var(--set-purple)), hsl(var(--set-red)), hsl(var(--set-green)));
   background-size: 300% 300%;
-  animation: gradient 2s ease infinite;
+  animation: gradient 3s ease infinite;
 }
 
 .pulse-soft {
@@ -172,10 +168,10 @@
 
 @keyframes pulse-soft {
   0% {
-    box-shadow: 0 0 0 0 rgba(var(--set-purple), 0.2);
+    box-shadow: 0 0 0 0 rgba(var(--set-purple), 0.15);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(var(--set-purple), 0);
+    box-shadow: 0 0 0 6px rgba(var(--set-purple), 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(var(--set-purple), 0);
@@ -205,4 +201,26 @@
 
 .set-squiggle {
   border-radius: 50% 20% / 10% 40%;
+}
+
+/* iOS style button */
+.ios-btn {
+  @apply rounded-full px-6 py-2.5 font-medium transition-all duration-300 bg-white/80 backdrop-blur-md text-foreground shadow-sm border border-white/30;
+}
+
+.ios-btn:hover {
+  @apply bg-white/90 transform -translate-y-0.5 shadow-md;
+}
+
+/* SET themed buttons */
+.set-btn-purple {
+  @apply bg-set-purple/10 text-set-purple border-set-purple/20 hover:bg-set-purple/20;
+}
+
+.set-btn-red {
+  @apply bg-set-red/10 text-set-red border-set-red/20 hover:bg-set-red/20;
+}
+
+.set-btn-green {
+  @apply bg-set-green/10 text-set-green border-set-green/20 hover:bg-set-green/20;
 }

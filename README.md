@@ -1,69 +1,67 @@
-# Welcome to your Lovable project
 
-## Project info
+# SET Game Detector
 
-**URL**: https://lovable.dev/projects/cffc29f2-0406-4f9c-85ca-7a5e49a55a0e
+An elegant application that detects valid SET combinations from images of the SET card game using computer vision and machine learning.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- Upload images of SET game layouts
+- AI-powered card detection and attribute classification
+- Visualization of all valid SET combinations
+- iOS-inspired design with SET game-themed styling
+- Mobile-friendly responsive interface
 
-**Use Lovable**
+## Technologies Used
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/cffc29f2-0406-4f9c-85ca-7a5e49a55a0e) and start prompting.
+- **Frontend**: React, Tailwind CSS, Lucide icons
+- **Backend**: Python, Streamlit
+- **ML/CV**: TensorFlow, PyTorch, OpenCV, YOLO
 
-Changes made via Lovable will be committed automatically to this repo.
+## Deployment
 
-**Use your preferred IDE**
+### Streamlit Deployment
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. Clone this repository
+2. Install the required Python packages:
+   ```
+   pip install streamlit numpy opencv-python pandas tensorflow torch ultralytics pillow
+   ```
+3. Run the Streamlit app:
+   ```
+   streamlit run app.py
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Setting up the models
 
-Follow these steps:
+For production deployment, you'll need to prepare the following:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Create the necessary directories:
+   ```
+   mkdir -p models/Characteristics/11022025
+   mkdir -p models/Shape/15052024
+   mkdir -p models/Card/16042024
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. Place your trained models in these directories:
+   - `models/Characteristics/11022025/shape_model.keras` - For shape classification
+   - `models/Characteristics/11022025/fill_model.keras` - For fill pattern classification
+   - `models/Shape/15052024/best.pt` - YOLO model for shape detection
+   - `models/Card/16042024/best.pt` - YOLO model for card detection
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Development
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+To work on the frontend React application:
 
-**Edit a file directly in GitHub**
+1. Install dependencies:
+   ```
+   npm install
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+2. Start the development server:
+   ```
+   npm run dev
+   ```
 
-**Use GitHub Codespaces**
+## License
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/cffc29f2-0406-4f9c-85ca-7a5e49a55a0e) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+MIT
