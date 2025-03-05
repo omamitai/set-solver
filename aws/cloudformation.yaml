@@ -1,0 +1,157 @@
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SET Game Detector AWS Infrastructure'
+
+Parameters:
+  ModelBucketName:
+    Type: String
+    Description: 'Name for the S3 bucket to store ML models'
+    Default: 'set-game-detector-models'
+  
+  LambdaMemory:
+    Type: Number
+    Description: 'Memory allocation for Lambda function (MB)'
+    Default: 1024
+    AllowedValues: [1024, 2048, 3008, 4096, 8192, 10240]
+
+  LambdaTimeout:
+    Type: Number
+    Description: 'Lambda function timeout (seconds)'
+    Default: 30
+    MaxValue: 900
+
+Resources:
+  # S3 bucket for ML models
+  ModelBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ModelBucketName
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+
+  # Lambda execution role
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: S3ModelAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource: !Sub 'arn:aws:s3:::${ModelBucket}/*'
+
+  # Lambda function for SET detection
+  SetDetectorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SetGameDetector
+      Runtime: python3.9
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref ModelBucket
+        S3Key: lambda/function.zip
+      MemorySize: !Ref LambdaMemory
+      Timeout: !Ref LambdaTimeout
+      Environment:
+        Variables:
+          MODEL_BUCKET: !Ref ModelBucket
+
+  # API Gateway
+  SetDetectorApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: SET-Game-Detector-API
+
+  SetDetectorResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref SetDetectorApi
+      ParentId: !GetAtt SetDetectorApi.RootResourceId
+      PathPart: 'detect-sets'
+
+  SetDetectorMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref SetDetectorApi
+      ResourceId: !Ref SetDetectorResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SetDetectorFunction.Arn}/invocations'
+      MethodResponses:
+        - StatusCode: 200
+          ResponseModels:
+            application/json: 'Empty'
+
+  # CORS Support
+  SetDetectorCorsMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref SetDetectorApi
+      ResourceId: !Ref SetDetectorResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+
+  # Lambda permission for API Gateway
+  SetDetectorPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt SetDetectorFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SetDetectorApi}/*/POST/detect-sets'
+
+  # API Gateway Deployment
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - SetDetectorMethod
+      - SetDetectorCorsMethod
+    Properties:
+      RestApiId: !Ref SetDetectorApi
+      StageName: prod
+
+Outputs:
+  ModelBucketName:
+    Description: 'S3 bucket for ML models'
+    Value: !Ref ModelBucket
+    
+  LambdaFunction:
+    Description: 'SET Detector Lambda Function'
+    Value: !Ref SetDetectorFunction
+    
+  ApiEndpoint:
+    Description: 'API Gateway endpoint URL'
+    Value: !Sub 'https://${SetDetectorApi}.execute-api.${AWS::Region}.amazonaws.com/prod/detect-sets'
