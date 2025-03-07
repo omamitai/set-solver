@@ -20,11 +20,11 @@ const Index: React.FC = () => {
 
   useEffect(() => {
     // Determine if we're in mock mode
-    const useMockData = process.env.REACT_APP_USE_MOCK_DATA === 'true';
+    const useMockData = import.meta.env.VITE_USE_MOCK_DATA === 'true';
     setIsMockMode(useMockData);
     
     // Get the backend URL
-    const endpoint = process.env.REACT_APP_BACKEND_URL;
+    const endpoint = import.meta.env.VITE_BACKEND_URL;
     setBackendUrl(endpoint);
     
     console.log("Environment:", process.env.NODE_ENV);
@@ -73,68 +73,70 @@ const Index: React.FC = () => {
     setFoundSets(0);
   };
 
+  // How It Works component
+  const HowItWorks = () => (
+    <div className={cn(
+      "w-full animate-fade-in mt-8 mb-4",
+      "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4"
+    )}>
+      <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-5 text-center">
+        How It Works
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        {[
+          {
+            title: "Upload Image",
+            description: "Take a photo of your SET game layout and upload it.",
+            icon: "diamond"
+          },
+          {
+            title: "AI Detection",
+            description: "Our AI analyzes the image to identify all cards and their attributes.",
+            icon: "circle"
+          },
+          {
+            title: "View Results",
+            description: "See all valid sets highlighted directly on your image.",
+            icon: "triangle"
+          }
+        ].map((step, index) => (
+          <div key={index} className="rounded-xl ios-card hover-lift p-3 sm:p-4 relative overflow-hidden">
+            <div className="set-card-pattern opacity-20"></div>
+            <div className="flex flex-col items-center text-center relative z-10">
+              <div className={cn(
+                "w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg shadow-sm mb-2",
+                step.icon === "diamond" ? "bg-set-purple/10 set-diamond" : 
+                step.icon === "circle" ? "bg-set-red/10 set-oval" : 
+                "bg-set-green/10"
+              )}>
+                {step.icon === "diamond" ? (
+                  <Diamond className="h-3 w-3 sm:h-4 sm:w-4 text-set-purple opacity-80" />
+                ) : step.icon === "circle" ? (
+                  <Circle className="h-3 w-3 sm:h-4 sm:w-4 text-set-red opacity-80" />
+                ) : (
+                  <Triangle className="h-3 w-3 sm:h-4 sm:w-4 text-set-green opacity-80" />
+                )}
+              </div>
+              <h3 className="text-sm font-medium mb-1">
+                {step.title}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {step.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
       <main className="flex-1 flex flex-col pt-8 pb-4 sm:pt-10 sm:pb-6">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          {/* How It Works Section - Moved up */}
-          <div className={cn(
-            "w-full animate-fade-in mb-10",
-            "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4"
-          )}>
-            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-5 text-center">
-              How It Works
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-              {[
-                {
-                  title: "Upload Image",
-                  description: "Take a photo of your SET game layout and upload it.",
-                  icon: "diamond"
-                },
-                {
-                  title: "AI Detection",
-                  description: "Our AI analyzes the image to identify all cards and their attributes.",
-                  icon: "circle"
-                },
-                {
-                  title: "View Results",
-                  description: "See all valid sets highlighted directly on your image.",
-                  icon: "triangle"
-                }
-              ].map((step, index) => (
-                <div key={index} className="rounded-xl ios-card hover-lift p-3 sm:p-4 relative overflow-hidden">
-                  <div className="set-card-pattern opacity-20"></div>
-                  <div className="flex flex-col items-center text-center relative z-10">
-                    <div className={cn(
-                      "w-7 h-7 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg shadow-sm mb-2",
-                      step.icon === "diamond" ? "bg-set-purple/10 set-diamond" : 
-                      step.icon === "circle" ? "bg-set-red/10 set-oval" : 
-                      "bg-set-green/10"
-                    )}>
-                      {step.icon === "diamond" ? (
-                        <Diamond className="h-3 w-3 sm:h-4 sm:w-4 text-set-purple opacity-80" />
-                      ) : step.icon === "circle" ? (
-                        <Circle className="h-3 w-3 sm:h-4 sm:w-4 text-set-red opacity-80" />
-                      ) : (
-                        <Triangle className="h-3 w-3 sm:h-4 sm:w-4 text-set-green opacity-80" />
-                      )}
-                    </div>
-                    <h3 className="text-sm font-medium mb-1">
-                      {step.title}
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Main headline and intro - Moved down */}
+          {/* Main headline and intro */}
           <div className="text-center mb-6 sm:mb-8 animate-fade-in w-full max-w-3xl">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
               SET Game Detector
@@ -145,7 +147,7 @@ const Index: React.FC = () => {
             
             {isMockMode && (
               <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
-                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
+                ⚠️ Running in mock mode. Set VITE_USE_MOCK_DATA=false to use the real backend.
               </div>
             )}
             
@@ -172,6 +174,9 @@ const Index: React.FC = () => {
               />
             )}
           </div>
+          
+          {/* How It Works Section - Moved back below the image uploader */}
+          {!imageUrl && <HowItWorks />}
         </div>
       </main>
 

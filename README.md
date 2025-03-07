@@ -5,118 +5,108 @@ An AI-powered web application that identifies valid SET card combinations from u
 
 ## Overview
 
-SET Game Detector is a simple application that uses computer vision to analyze images of SET card games and highlight valid SET combinations. The system consists of:
-
-1. **Frontend**: React app for uploading images and displaying results
-2. **Backend**: Flask server that processes images and detects SETs
+SET Game Detector uses computer vision to analyze images of SET card games and highlight valid SET combinations. The application consists of a React frontend and Python backend, with a simplified deployment process.
 
 ## Project Structure
 
 ```
 set-detector/
-├── src/                     # Frontend source code
-│   ├── core/                # Core functionality
-│   │   └── setDetector.js   # Handles API communication
-│   ├── components/          # React components
-│   └── pages/               # Page components
-├── server.py                # Backend Flask server
-├── setup.sh                 # EC2 deployment script
-├── requirements.txt         # Python dependencies
-└── .env.example             # Example environment variables
+├── src/                       # Frontend source code (React)
+│   ├── core/                  # Core functionality
+│   │   └── setDetector.js     # API communication module
+│   ├── components/            # React components
+│   └── pages/                 # Page components
+├── server.py                  # Python backend server
+├── setup.sh                   # EC2 deployment script
+└── .env.example               # Environment variable template
 ```
 
 ## Quick Start for Development
 
-1. Clone this repository
-2. Install frontend dependencies:
+1. Clone the repository
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Create a `.env` file based on `.env.example`:
+3. Create a `.env` file:
    ```bash
    cp .env.example .env
    ```
 
-4. For development, set:
+4. For development (no backend needed):
    ```
    VITE_USE_MOCK_DATA=true
    ```
 
-5. Start the frontend development server:
+5. Start the development server:
    ```bash
    npm run dev
    ```
 
 ## EC2 Deployment Guide
 
-### 1. Launch an EC2 Instance
+### 1. Prepare Your EC2 Instance
 
-1. Launch an Ubuntu EC2 instance (t2.medium or larger recommended)
-2. Configure security groups to allow HTTP (80) and SSH (22)
-3. Connect to your instance:
+Launch an Ubuntu EC2 instance (t2.medium or larger) with HTTP (80) and SSH (22) ports open.
+
+### 2. Configure Everything with One Command
+
+1. Connect to your instance:
    ```bash
    ssh -i your-key.pem ubuntu@your-ec2-public-ip
    ```
 
-### 2. Deploy the Application
-
-1. Upload the setup script to your EC2 instance:
+2. Upload and run the setup script:
    ```bash
-   scp -i your-key.pem setup.sh ubuntu@your-ec2-public-ip:~/
+   # Upload setup script and server
+   scp -i your-key.pem setup.sh server.py ubuntu@your-ec2-public-ip:~/
+
+   # Make executable and run
+   ssh -i your-key.pem ubuntu@your-ec2-public-ip "chmod +x ~/setup.sh && ./setup.sh"
    ```
 
-2. Upload the server code:
-   ```bash
-   scp -i your-key.pem server.py requirements.txt ubuntu@your-ec2-public-ip:~/
+   The script automatically:
+   - Installs all required dependencies
+   - Sets up the Python environment
+   - Configures Nginx as a reverse proxy
+   - Sets up the backend service
+   - Configures the firewall
+
+### 3. Build and Deploy the Frontend
+
+1. Update `.env` for production:
+   ```
+   VITE_USE_MOCK_DATA=false
+   VITE_BACKEND_URL=http://your-ec2-public-ip/api/detect-sets
    ```
 
-3. SSH into your instance and run the setup script:
+2. Build the frontend:
    ```bash
-   ssh -i your-key.pem ubuntu@your-ec2-public-ip
-   chmod +x setup.sh
-   ./setup.sh
-   ```
-
-4. Build the frontend locally:
-   ```bash
-   # Update .env for production
-   echo "VITE_USE_MOCK_DATA=false" > .env
-   echo "VITE_BACKEND_URL=http://your-ec2-public-ip/api/detect-sets" >> .env
-   
-   # Build
    npm run build
    ```
 
-5. Upload the built frontend:
+3. Upload the build to your EC2 instance:
    ```bash
    scp -i your-key.pem -r dist/* ubuntu@your-ec2-public-ip:~/set-detector/build/
    ```
 
-6. Restart the service:
-   ```bash
-   ssh -i your-key.pem ubuntu@your-ec2-public-ip "sudo systemctl restart set-detector"
-   ```
+### 4. Access Your Application
 
-7. Access your application at `http://your-ec2-public-ip`
+Open `http://your-ec2-public-ip` in your browser.
 
-## Configuration Options
+## Environment Variables
 
-- `VITE_USE_MOCK_DATA`: Set to 'true' for development, 'false' for production
-- `VITE_BACKEND_URL`: The URL of the backend API endpoint
+The application only requires two environment variables:
+
+- `VITE_USE_MOCK_DATA`: Set to 'true' for development without a backend, 'false' for production
+- `VITE_BACKEND_URL`: The URL of the backend API endpoint (only needed when `VITE_USE_MOCK_DATA=false`)
 
 ## Troubleshooting
 
-### Common Issues
-
-- **Backend not responding**: Check if the service is running with `sudo systemctl status set-detector`
-- **Frontend can't connect to backend**: Verify your `.env` file has the correct backend URL
-- **Permission errors**: Ensure the service user has appropriate permissions
-
-### Logs
-
-- Backend logs: `sudo journalctl -u set-detector`
-- Nginx logs: `/var/log/nginx/access.log` and `/var/log/nginx/error.log`
+- Check backend logs: `sudo journalctl -u set-detector`
+- Check Nginx logs: `sudo tail -f /var/log/nginx/error.log`
+- Restart the service: `sudo systemctl restart set-detector`
 
 ## License
 

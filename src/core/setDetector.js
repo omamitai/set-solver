@@ -1,42 +1,45 @@
 
 /**
- * SET Game Detector Core
+ * SET Card Detection Module
  * 
- * This module handles communication with the backend service for SET card detection.
- * It provides functions to upload images and receive detection results.
+ * This is the core module responsible for image analysis and SET card detection.
+ * It handles communication with the backend AI service (when in production mode)
+ * or provides mock responses (when in development mode).
  * 
- * In development mode (USE_MOCK_DATA=true), it will use mock data instead
- * of actually calling the backend service.
+ * Configuration:
+ * - VITE_USE_MOCK_DATA: Set to 'true' to use mock data (no backend needed)
+ * - VITE_BACKEND_URL: URL of the backend API (required in production mode)
  */
 
-// Configuration settings from environment variables
+// Configuration from environment variables
 const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api/detect-sets';
 
 /**
- * Mock implementation for development/testing
- * @param {File} imageFile - The image file to process
+ * Mock implementation that returns simulated results
+ * Used for development/testing without a backend
+ * 
+ * @param {File} imageFile - The uploaded image file
  * @returns {Promise<Object>} - Mock detection results
  */
 const mockDetectSets = async (imageFile) => {
-  console.log("Using mock SET detection for:", imageFile.name);
+  console.log("Using mock SET detection for image:", imageFile.name);
   
-  // Simulate processing time
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  // Simulate processing time (1-2 seconds)
+  await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
   
-  // Return mock results
-  const mockNumSets = Math.floor(Math.random() * 6) + 1;
-  
+  // Return mock results with a random number of sets (1-6)
   return {
     success: true,
-    setCount: mockNumSets,
+    setCount: Math.floor(Math.random() * 6) + 1,
     image: URL.createObjectURL(imageFile)
   };
 };
 
 /**
- * Production implementation using backend server
- * @param {File} imageFile - The image file to process
+ * Production implementation that calls the backend AI service
+ * 
+ * @param {File} imageFile - The uploaded image file
  * @returns {Promise<Object>} - Detection results from the backend
  */
 const backendDetectSets = async (imageFile) => {
@@ -44,16 +47,18 @@ const backendDetectSets = async (imageFile) => {
     throw new Error("Backend URL not configured. Please set VITE_BACKEND_URL in your .env file.");
   }
   
-  console.log("Calling backend API:", BACKEND_URL);
+  console.log("Calling SET detection API:", BACKEND_URL);
   
+  // Prepare form data with the image file
   const formData = new FormData();
   formData.append('file', imageFile);
   
   try {
-    // Set a reasonable timeout
+    // Set a 30-second timeout for the API call
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
     
+    // Make the API request
     const response = await fetch(BACKEND_URL, {
       method: 'POST',
       body: formData,
@@ -62,14 +67,16 @@ const backendDetectSets = async (imageFile) => {
     
     clearTimeout(timeoutId);
     
+    // Handle error responses
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Server responded with status ${response.status}: ${errorText}`);
+      throw new Error(`Server error (${response.status}): ${errorText}`);
     }
     
+    // Parse and return the results
     return await response.json();
   } catch (error) {
-    console.error("Error calling SET detection API:", error);
+    console.error("API error:", error);
     
     if (error.name === 'AbortError') {
       throw new Error("Request timed out. The server took too long to respond.");
@@ -79,5 +86,5 @@ const backendDetectSets = async (imageFile) => {
   }
 };
 
-// Export the appropriate function based on configuration
+// Export the appropriate implementation based on configuration
 export const detectSets = USE_MOCK_DATA ? mockDetectSets : backendDetectSets;
