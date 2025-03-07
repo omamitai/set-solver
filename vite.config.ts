@@ -17,7 +17,7 @@ export default defineConfig({
     sourcemap: false,
   },
   server: {
-    port: 3000,
+    port: 8080,
     proxy: {
       '/api': {
         target: process.env.VITE_BACKEND_URL || 'http://localhost:8000',
