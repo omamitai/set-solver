@@ -134,10 +134,10 @@ const Index: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      <main className="flex-1 flex flex-col pt-8 pb-4 sm:pt-10 sm:pb-6">
+      <main className="flex-1 flex flex-col pt-16 pb-4 sm:pt-20 sm:pb-6">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          {/* Main headline and intro */}
-          <div className="text-center mb-6 sm:mb-8 animate-fade-in w-full max-w-3xl">
+          {/* Main headline and intro - increased top margin */}
+          <div className="text-center mb-6 sm:mb-8 animate-fade-in w-full max-w-3xl mt-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
               SET Game Detector
             </h1>
