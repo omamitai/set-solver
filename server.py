@@ -1,12 +1,12 @@
 
 """
-SET Game Detector EC2 Server
+SET Game Detector Server
 
-This file provides the backend server for SET detection using Flask.
-It should be deployed on an EC2 instance.
+A simplified Flask server for SET detection that works well on EC2.
 
 To run:
-    gunicorn --bind 0.0.0.0:8000 server:app
+    python server.py  # for development
+    gunicorn --bind 0.0.0.0:8000 server:app  # for production
 """
 
 from flask import Flask, request, jsonify
@@ -20,13 +20,12 @@ from ultralytics import YOLO
 from itertools import combinations
 from pathlib import Path
 import base64
-import io
-import os
 import logging
 import sys
 import time
-import pandas as pd
+import os
 import traceback
+import pandas as pd
 
 # Configure logging
 logging.basicConfig(
@@ -43,6 +42,15 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+# Base path for models
+MODEL_BASE_DIR = Path("models")
+
+# Model paths
+SHAPE_MODEL_PATH = MODEL_BASE_DIR / "Characteristics" / "11022025" / "shape_model.keras"
+FILL_MODEL_PATH = MODEL_BASE_DIR / "Characteristics" / "11022025" / "fill_model.keras"
+SHAPE_DETECTOR_PATH = MODEL_BASE_DIR / "Shape" / "15052024" / "best.pt"
+CARD_DETECTOR_PATH = MODEL_BASE_DIR / "Card" / "16042024" / "best.pt"
+
 # Global variables for models
 model_shape = None
 model_fill = None
@@ -55,47 +63,42 @@ def load_models():
     
     try:
         logger.info("Loading models...")
-        base_dir = Path("models")
         
         # Check if models directory exists
-        if not base_dir.exists():
-            logger.error(f"Models directory not found: {base_dir}")
-            raise FileNotFoundError(f"Models directory not found: {base_dir}")
-        
-        char_path = base_dir / "Characteristics" / "11022025"
-        shape_path = base_dir / "Shape" / "15052024" 
-        card_path = base_dir / "Card" / "16042024"
+        if not MODEL_BASE_DIR.exists():
+            logger.error(f"Models directory not found: {MODEL_BASE_DIR}")
+            raise FileNotFoundError(f"Models directory not found: {MODEL_BASE_DIR}")
         
         # Load classification models
-        if (char_path / "shape_model.keras").exists():
+        if SHAPE_MODEL_PATH.exists():
             logger.info("Loading shape model...")
-            model_shape = load_model(str(char_path / "shape_model.keras"))
+            model_shape = load_model(str(SHAPE_MODEL_PATH))
         else:
-            logger.error(f"Shape model not found at {char_path / 'shape_model.keras'}")
+            logger.error(f"Shape model not found at {SHAPE_MODEL_PATH}")
             raise FileNotFoundError(f"Shape model not found")
             
-        if (char_path / "fill_model.keras").exists():
+        if FILL_MODEL_PATH.exists():
             logger.info("Loading fill model...")
-            model_fill = load_model(str(char_path / "fill_model.keras"))
+            model_fill = load_model(str(FILL_MODEL_PATH))
         else:
-            logger.error(f"Fill model not found at {char_path / 'fill_model.keras'}")
+            logger.error(f"Fill model not found at {FILL_MODEL_PATH}")
             raise FileNotFoundError(f"Fill model not found")
         
         # Load detection models
-        if (shape_path / "best.pt").exists():
+        if SHAPE_DETECTOR_PATH.exists():
             logger.info("Loading shape detector...")
-            detector_shape = YOLO(str(shape_path / "best.pt"))
+            detector_shape = YOLO(str(SHAPE_DETECTOR_PATH))
             detector_shape.conf = 0.5
         else:
-            logger.error(f"Shape detector not found at {shape_path / 'best.pt'}")
+            logger.error(f"Shape detector not found at {SHAPE_DETECTOR_PATH}")
             raise FileNotFoundError(f"Shape detector not found")
             
-        if (card_path / "best.pt").exists():
+        if CARD_DETECTOR_PATH.exists():
             logger.info("Loading card detector...")
-            detector_card = YOLO(str(card_path / "best.pt"))
+            detector_card = YOLO(str(CARD_DETECTOR_PATH))
             detector_card.conf = 0.5
         else:
-            logger.error(f"Card detector not found at {card_path / 'best.pt'}")
+            logger.error(f"Card detector not found at {CARD_DETECTOR_PATH}")
             raise FileNotFoundError(f"Card detector not found")
             
         # Use GPU if available
@@ -248,7 +251,7 @@ def draw_set_indicators(img, sets):
 @app.route('/')
 def index():
     """Root endpoint to check if server is running"""
-    return "SET Game Detector EC2 Server is running. Use /detect-sets to analyze an image."
+    return "SET Game Detector Server is running. Use /api/detect-sets to analyze an image."
 
 @app.route('/health')
 def health():
@@ -257,7 +260,7 @@ def health():
         return jsonify({"status": "error", "message": "Models not loaded"}), 500
     return jsonify({"status": "healthy", "message": "Server is running and models are loaded"})
 
-@app.route('/detect-sets', methods=['POST'])
+@app.route('/api/detect-sets', methods=['POST'])
 def detect_sets():
     """Endpoint to detect SETs in an uploaded image"""
     start_time = time.time()
@@ -272,9 +275,8 @@ def detect_sets():
         
     try:
         # Read image
-        in_memory_file = io.BytesIO()
-        file.save(in_memory_file)
-        nparr = np.frombuffer(in_memory_file.getvalue(), np.uint8)
+        file_bytes = file.read()
+        nparr = np.frombuffer(file_bytes, np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         
         if image is None:
@@ -326,19 +328,16 @@ def detect_sets():
         }), 500
 
 if __name__ == "__main__":
-    try:
-        # Load models before starting the server
-        if not load_models():
-            logger.critical("Failed to load models, exiting")
-            sys.exit(1)
-        
-        # Get port from environment variable or use default
-        port = int(os.environ.get('PORT', 8000))
-        
-        logger.info(f"Starting server on port {port}")
-        # Run the server on all interfaces (required for EC2)
-        app.run(host='0.0.0.0', port=port, debug=False)
-    except Exception as e:
-        logger.critical(f"Failed to start server: {e}")
-        logger.critical(traceback.format_exc())
+    # Load models before starting the server
+    if not load_models():
+        logger.critical("Failed to load models, exiting")
         sys.exit(1)
+    
+    # Get port from environment variable or use default
+    port = int(os.environ.get('PORT', 8000))
+    
+    # Determine if we're in development or production
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    
+    logger.info(f"Starting server on port {port} in {'development' if debug_mode else 'production'} mode")
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)

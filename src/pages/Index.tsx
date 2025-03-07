@@ -16,20 +16,20 @@ const Index: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [foundSets, setFoundSets] = useState(0);
   const [isMockMode, setIsMockMode] = useState(false);
-  const [apiEndpoint, setApiEndpoint] = useState<string | null>(null);
+  const [backendUrl, setBackendUrl] = useState<string | null>(null);
 
   useEffect(() => {
     // Determine if we're in mock mode
     const useMockData = process.env.REACT_APP_USE_MOCK_DATA === 'true';
     setIsMockMode(useMockData);
     
-    // Get the API endpoint (either EC2 or AWS API Gateway)
-    const endpoint = process.env.REACT_APP_AWS_API_ENDPOINT || process.env.REACT_APP_EC2_SERVER_URL;
-    setApiEndpoint(endpoint);
+    // Get the backend URL
+    const endpoint = process.env.REACT_APP_BACKEND_URL;
+    setBackendUrl(endpoint);
     
     console.log("Environment:", process.env.NODE_ENV);
     console.log("Mock mode:", useMockData);
-    console.log("API endpoint:", endpoint);
+    console.log("Backend URL:", endpoint);
   }, []);
 
   const handleImageSelected = async (image: File) => {
@@ -52,9 +52,9 @@ const Index: React.FC = () => {
       } else {
         toast.error(result.error || "Failed to process image");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error processing image:", error);
-      toast.error("An unexpected error occurred");
+      toast.error(error.message || "An unexpected error occurred");
     } finally {
       setIsProcessing(false);
     }
@@ -77,49 +77,12 @@ const Index: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-set-gradient">
       <Header />
       
-      <main className="flex-1 flex flex-col pt-16 pb-4 sm:pt-20 sm:pb-6">
+      <main className="flex-1 flex flex-col pt-8 pb-4 sm:pt-10 sm:pb-6">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 flex flex-col items-center">
-          <div className="text-center mb-6 sm:mb-8 animate-fade-in w-full max-w-3xl">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
-              SET Game Detector
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
-              Upload an image of your SET card game layout and we'll identify all valid sets for you.
-            </p>
-            
-            {isMockMode && (
-              <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
-                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
-              </div>
-            )}
-            
-            {!isMockMode && !apiEndpoint && (
-              <div className="mt-2 p-1.5 bg-red-100 text-red-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
-                ⚠️ Backend API endpoint not configured. Check your environment variables.
-              </div>
-            )}
-          </div>
-
-          <div className="w-full">
-            {!imageUrl ? (
-              <ImageUploader 
-                onImageSelected={handleImageSelected} 
-                isProcessing={isProcessing}
-              />
-            ) : (
-              <Results 
-                imageUrl={imageUrl}
-                processedImageUrl={processedImageUrl}
-                isProcessing={isProcessing}
-                onReset={handleReset}
-                foundSets={foundSets}
-              />
-            )}
-          </div>
-
+          {/* How It Works Section - Moved up */}
           <div className={cn(
-            "w-full animate-fade-in mt-10 sm:mt-20 pt-2",
-            "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4 sm:before:mb-6"
+            "w-full animate-fade-in mb-10",
+            "before:content-[''] before:block before:h-px before:w-16 before:bg-border/40 before:mx-auto before:mb-4"
           )}>
             <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-5 text-center">
               How It Works
@@ -169,6 +132,45 @@ const Index: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+          
+          {/* Main headline and intro - Moved down */}
+          <div className="text-center mb-6 sm:mb-8 animate-fade-in w-full max-w-3xl">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
+              SET Game Detector
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
+              Upload an image of your SET card game layout and we'll identify all valid sets for you.
+            </p>
+            
+            {isMockMode && (
+              <div className="mt-2 p-1.5 bg-yellow-100 text-yellow-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
+                ⚠️ Running in mock mode. Set REACT_APP_USE_MOCK_DATA=false to use the real backend.
+              </div>
+            )}
+            
+            {!isMockMode && !backendUrl && (
+              <div className="mt-2 p-1.5 bg-red-100 text-red-800 rounded-lg max-w-xs mx-auto text-[10px] sm:text-xs">
+                ⚠️ Backend URL not configured. Check your environment variables.
+              </div>
+            )}
+          </div>
+
+          <div className="w-full">
+            {!imageUrl ? (
+              <ImageUploader 
+                onImageSelected={handleImageSelected} 
+                isProcessing={isProcessing}
+              />
+            ) : (
+              <Results 
+                imageUrl={imageUrl}
+                processedImageUrl={processedImageUrl}
+                isProcessing={isProcessing}
+                onReset={handleReset}
+                foundSets={foundSets}
+              />
+            )}
           </div>
         </div>
       </main>

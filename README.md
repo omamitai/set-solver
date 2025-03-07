@@ -5,103 +5,90 @@ An AI-powered web application that identifies valid SET card combinations from u
 
 ## Overview
 
-SET Game Detector uses computer vision and deep learning to analyze images of SET card games, identify all cards on the table, and highlight valid SET combinations. This project includes:
+SET Game Detector uses computer vision and deep learning to analyze images of SET card games, identify all cards on the table, and highlight valid SET combinations.
 
-- A React frontend with a user-friendly interface
-- A Python backend that runs the SET detection algorithms
-- Support for deployment on AWS EC2 or AWS Lambda + API Gateway
+## Simplified Architecture
 
-## Frontend Setup
+- **Frontend**: React + TypeScript app that uploads images and displays results
+- **Backend**: Python Flask server with ML models for SET detection
+- **Deployment**: Single EC2 instance with Nginx for serving both frontend and backend
 
-### Prerequisites
-- Node.js 16+
-- npm or yarn
+## Quick Start
 
-### Installation
+### Development Setup
 
 1. Clone this repository
-2. Install dependencies:
+2. Install frontend dependencies:
    ```bash
    npm install
    ```
+
 3. Create a `.env` file based on `.env.example`:
    ```bash
    cp .env.example .env
    ```
-4. Configure the `.env` file:
-   - For development: Set `REACT_APP_USE_MOCK_DATA=true`
-   - For production: Set `REACT_APP_USE_MOCK_DATA=false` and configure the appropriate backend URL
 
-5. Start the development server:
+4. For development, set:
+   ```
+   REACT_APP_USE_MOCK_DATA=true
+   ```
+
+5. Start the frontend development server:
    ```bash
    npm run dev
    ```
 
-## Backend Deployment Options
+### Production Deployment on EC2
 
-### Option 1: EC2 Deployment
-
-1. Launch an EC2 instance (Ubuntu 20.04+ recommended, t2.medium or larger)
-2. Configure security groups to allow inbound traffic on ports 22, 80, and 443
-3. Connect to your instance via SSH
-4. Upload necessary files to your instance:
+1. Launch an EC2 instance (Ubuntu recommended, t2.medium or larger)
+2. SSH into your instance
+3. Clone this repository on your instance
+4. Run the setup script:
    ```bash
-   scp -i your-key.pem server.py requirements.txt ec2_setup.sh ubuntu@your-ec2-ip:~/
-   chmod +x ec2_setup.sh
-   ./ec2_setup.sh
+   chmod +x setup.sh
+   ./setup.sh
    ```
-5. Upload your trained models to the appropriate directories
-6. Update your frontend `.env` file:
+
+5. Upload your model files to the specified locations
+6. Upload frontend build to the web root:
+   ```bash
+   sudo rm -rf /var/www/html/*
+   sudo cp -r build/* /var/www/html/
+   ```
+
+7. Update your `.env` file for production before building:
    ```
    REACT_APP_USE_MOCK_DATA=false
-   REACT_APP_EC2_SERVER_URL=http://your-ec2-public-ip/detect-sets
+   REACT_APP_BACKEND_URL=http://your-ec2-public-ip/api/detect-sets
    ```
 
-### Option 2: AWS Serverless Deployment
+### Model Files
 
-1. Install the AWS CLI and configure it with your credentials
-2. Deploy using CloudFormation:
-   ```bash
-   cd aws
-   ./deploy.sh
-   ```
-3. Upload your trained models to the S3 bucket created by CloudFormation
-4. Update your frontend `.env` file:
-   ```
-   REACT_APP_USE_MOCK_DATA=false
-   REACT_APP_AWS_API_ENDPOINT=https://your-api-gateway-endpoint
-   ```
+You need to have the following model files:
+- `models/Characteristics/11022025/shape_model.keras`
+- `models/Characteristics/11022025/fill_model.keras`
+- `models/Shape/15052024/best.pt`
+- `models/Card/16042024/best.pt`
 
-## ML Models
+## Troubleshooting
 
-This application requires the following models:
+### Common Issues
 
-- Card detector (YOLO model): `models/Card/16042024/best.pt`
-- Shape detector (YOLO model): `models/Shape/15052024/best.pt`
-- Shape classifier (Keras model): `models/Characteristics/11022025/shape_model.keras`
-- Fill classifier (Keras model): `models/Characteristics/11022025/fill_model.keras`
+- **Backend not responding**: Check if the service is running with `sudo systemctl status set-detector`
+- **Models not loading**: Verify model files exist and have correct permissions
+- **Frontend can't connect to backend**: Check your `.env` file and make sure Nginx is configured correctly
 
-## Building for Production
+### Logs
 
-To build the frontend for production:
+- Backend logs: `journalctl -u set-detector`
+- Nginx logs: `/var/log/nginx/access.log` and `/var/log/nginx/error.log`
 
-```bash
-npm run build
-```
+## Security Recommendations
 
-The built files will be in the `dist` directory and can be deployed to any static hosting service like AWS S3 + CloudFront, Netlify, or Vercel.
-
-## Architecture
-
-- **Frontend**: React, TypeScript, Tailwind CSS
-- **Backend**: Flask API or AWS Lambda
-- **ML Stack**: TensorFlow, PyTorch, YOLO, OpenCV
+- Set up SSL with Let's Encrypt for production
+- Restrict access to your EC2 instance using security groups
+- Keep packages up to date
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgements
-
-- SET is a registered trademark of Set Enterprises, Inc.
-- This project is for educational purposes only.
+This project is licensed under the MIT License. SET is a registered trademark of Set Enterprises, Inc.
