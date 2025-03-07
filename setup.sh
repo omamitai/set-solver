@@ -1,6 +1,6 @@
 
 #!/bin/bash
-# Simplified SET Game Detector Setup Script for EC2
+# SET Game Detector Setup Script for EC2
 
 # Exit on any error
 set -e
@@ -21,12 +21,19 @@ sudo apt-get upgrade -y
 # Install dependencies
 echo -e "${YELLOW}Installing dependencies...${NC}"
 sudo apt-get install -y python3-pip python3-dev python3-venv libgl1-mesa-glx \
-  libglib2.0-0 nginx certbot python3-certbot-nginx
+  libglib2.0-0 nginx certbot python3-certbot-nginx git
 
 # Create project directory
 echo -e "${YELLOW}Setting up project directory...${NC}"
 mkdir -p ~/set-detector
 cd ~/set-detector
+
+# Clone the repository or create structure if it doesn't exist
+if [ ! -f "server.py" ]; then
+  echo -e "${YELLOW}Initializing project structure...${NC}"
+  touch server.py
+  mkdir -p build
+fi
 
 # Create Python virtual environment
 echo -e "${YELLOW}Creating Python virtual environment...${NC}"
@@ -36,13 +43,7 @@ source venv/bin/activate
 # Install Python packages
 echo -e "${YELLOW}Installing Python packages...${NC}"
 pip install --upgrade pip
-pip install -r requirements.txt
-
-# Create model directories
-echo -e "${YELLOW}Creating model directories...${NC}"
-mkdir -p models/Characteristics/11022025
-mkdir -p models/Shape/15052024
-mkdir -p models/Card/16042024
+pip install flask flask-cors pillow numpy opencv-python-headless gunicorn
 
 # Set up Nginx
 echo -e "${YELLOW}Configuring Nginx...${NC}"
@@ -52,12 +53,7 @@ server {
     server_name _;
 
     location / {
-        root /var/www/html;
-        try_files \$uri \$uri/ /index.html;
-    }
-
-    location /api/ {
-        proxy_pass http://localhost:8000/api/;
+        proxy_pass http://localhost:8000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -66,10 +62,6 @@ server {
         # Timeout settings
         proxy_connect_timeout 75s;
         proxy_read_timeout 300s;
-    }
-
-    location /health {
-        proxy_pass http://localhost:8000/health;
     }
 }
 EOL'
@@ -113,18 +105,19 @@ sudo ufw --force enable
 echo -e "${GREEN}====== Installation Complete ======${NC}"
 echo -e "The SET Game Detector server is now running."
 echo -e ""
-echo -e "${YELLOW}IMPORTANT:${NC} Upload your model files to these locations:"
-echo -e "- ~/set-detector/models/Characteristics/11022025/shape_model.keras"
-echo -e "- ~/set-detector/models/Characteristics/11022025/fill_model.keras"
-echo -e "- ~/set-detector/models/Shape/15052024/best.pt"
-echo -e "- ~/set-detector/models/Card/16042024/best.pt"
-echo -e ""
-echo -e "After uploading models, restart the service with:"
-echo -e "sudo systemctl restart set-detector"
-echo -e ""
-echo -e "Your server is now accessible at:"
+echo -e "${YELLOW}Your server is now accessible at:${NC}"
 echo -e "http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null || echo 'YOUR-EC2-PUBLIC-IP')"
 echo -e ""
-echo -e "To deploy the frontend, upload your build files to: /var/www/html"
+echo -e "${YELLOW}To deploy the frontend:${NC}"
+echo -e "1. Set environment variables in your frontend:"
+echo -e "   VITE_USE_MOCK_DATA=false"
+echo -e "   VITE_BACKEND_URL=http://YOUR-EC2-PUBLIC-IP/api/detect-sets"
+echo -e ""
+echo -e "2. Build the frontend and upload to the server:"
+echo -e "   npm run build"
+echo -e "   scp -r dist/* ubuntu@YOUR-EC2-PUBLIC-IP:~/set-detector/build/"
+echo -e ""
+echo -e "3. Restart the service:"
+echo -e "   sudo systemctl restart set-detector"
 echo -e ""
 echo -e "${GREEN}==========================================${NC}"

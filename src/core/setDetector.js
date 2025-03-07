@@ -1,16 +1,22 @@
 
 /**
- * SET Game Detector Core Logic
+ * SET Game Detector Core
  * 
- * Handles communication with the backend service or provides mock data.
+ * This module handles communication with the backend service for SET card detection.
+ * It provides functions to upload images and receive detection results.
+ * 
+ * In development mode (USE_MOCK_DATA=true), it will use mock data instead
+ * of actually calling the backend service.
  */
 
-// Read environment variables
-const USE_MOCK_DATA = process.env.REACT_APP_USE_MOCK_DATA === 'true';
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+// Configuration settings from environment variables
+const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api/detect-sets';
 
 /**
  * Mock implementation for development/testing
+ * @param {File} imageFile - The image file to process
+ * @returns {Promise<Object>} - Mock detection results
  */
 const mockDetectSets = async (imageFile) => {
   console.log("Using mock SET detection for:", imageFile.name);
@@ -30,10 +36,12 @@ const mockDetectSets = async (imageFile) => {
 
 /**
  * Production implementation using backend server
+ * @param {File} imageFile - The image file to process
+ * @returns {Promise<Object>} - Detection results from the backend
  */
 const backendDetectSets = async (imageFile) => {
   if (!BACKEND_URL) {
-    throw new Error("Backend URL not configured. Please set REACT_APP_BACKEND_URL in your .env file.");
+    throw new Error("Backend URL not configured. Please set VITE_BACKEND_URL in your .env file.");
   }
   
   console.log("Calling backend API:", BACKEND_URL);

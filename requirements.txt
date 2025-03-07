@@ -1,11 +1,15 @@
 
+# Core server
 Flask==2.3.3
 Flask-CORS==4.0.0
+gunicorn==21.2.0
+
+# Image processing
+Pillow==10.0.0
 numpy==1.24.3
 opencv-python-headless==4.8.0.76
-pandas==2.0.3
-tensorflow==2.12.0
-torch==2.0.1
-ultralytics==8.0.145
-gunicorn==21.2.0
-Pillow==10.0.0
+
+# Additional libraries for production (optional)
+# tensorflow==2.12.0   # Uncomment if using TensorFlow models
+# torch==2.0.1         # Uncomment if using PyTorch models
+# ultralytics==8.0.145 # Uncomment if using YOLO models
