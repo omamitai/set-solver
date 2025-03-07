@@ -37,7 +37,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger('set-detector')
 
-app = Flask(__name__, static_folder='build')
+app = Flask(__name__, static_folder='dist')
 CORS(app)
 
 # Environment configuration

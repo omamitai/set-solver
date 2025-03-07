@@ -32,7 +32,7 @@ cd ~/set-detector
 if [ ! -f "server.py" ]; then
   echo -e "${YELLOW}Initializing project structure...${NC}"
   touch server.py
-  mkdir -p build
+  mkdir -p dist
 fi
 
 # Create Python virtual environment
@@ -43,7 +43,11 @@ source venv/bin/activate
 # Install Python packages
 echo -e "${YELLOW}Installing Python packages...${NC}"
 pip install --upgrade pip
-pip install flask flask-cors pillow numpy opencv-python-headless gunicorn
+pip install -r requirements.txt
+
+# Copy server.py and frontend files
+echo -e "${YELLOW}Copying application files...${NC}"
+# Copy server.py and dist/ directory from your deployment package
 
 # Set up Nginx
 echo -e "${YELLOW}Configuring Nginx...${NC}"
@@ -86,6 +90,7 @@ ExecStart=/home/ubuntu/set-detector/venv/bin/gunicorn --workers 2 --timeout 120 
 Restart=always
 RestartSec=10
 Environment="PYTHONUNBUFFERED=1"
+Environment="USE_MOCK_DATA=false"
 
 [Install]
 WantedBy=multi-user.target
@@ -108,16 +113,10 @@ echo -e ""
 echo -e "${YELLOW}Your server is now accessible at:${NC}"
 echo -e "http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null || echo 'YOUR-EC2-PUBLIC-IP')"
 echo -e ""
-echo -e "${YELLOW}To deploy the frontend:${NC}"
-echo -e "1. Set environment variables in your frontend:"
-echo -e "   VITE_USE_MOCK_DATA=false"
-echo -e "   VITE_BACKEND_URL=http://YOUR-EC2-PUBLIC-IP/api/detect-sets"
-echo -e ""
-echo -e "2. Build the frontend and upload to the server:"
-echo -e "   npm run build"
-echo -e "   scp -r dist/* ubuntu@YOUR-EC2-PUBLIC-IP:~/set-detector/build/"
-echo -e ""
-echo -e "3. Restart the service:"
-echo -e "   sudo systemctl restart set-detector"
+echo -e "${YELLOW}To manage the service:${NC}"
+echo -e "sudo systemctl status set-detector  # Check status"
+echo -e "sudo systemctl restart set-detector # Restart service"
+echo -e "sudo systemctl stop set-detector    # Stop service"
+echo -e "sudo journalctl -u set-detector     # View logs"
 echo -e ""
 echo -e "${GREEN}==========================================${NC}"
