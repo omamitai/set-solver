@@ -13,6 +13,8 @@ Usage:
 Environment settings:
   - PORT: The port to run the server on (default: 8000)
   - USE_MOCK_DATA: Set to 'true' for development without models
+  - MODEL_PATH: Path to the model directory (default: 'models')
+  - LOG_LEVEL: Logging level (default: 'INFO')
 """
 
 from flask import Flask, request, jsonify, send_from_directory
@@ -26,10 +28,12 @@ from io import BytesIO
 from PIL import Image
 import logging
 import sys
+import traceback
 
 # Configure logging
+log_level = os.environ.get('LOG_LEVEL', 'INFO').upper()
 logging.basicConfig(
-    level=logging.INFO,
+    level=getattr(logging, log_level),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout)
@@ -38,11 +42,18 @@ logging.basicConfig(
 logger = logging.getLogger('set-detector')
 
 app = Flask(__name__, static_folder='dist')
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Environment configuration
 USE_MOCK_DATA = os.environ.get('USE_MOCK_DATA', 'false').lower() == 'true'
 PORT = int(os.environ.get('PORT', 8000))
+MODEL_PATH = os.environ.get('MODEL_PATH', 'models')
+
+logger.info(f"Starting SET Game Detector server with configuration:")
+logger.info(f"USE_MOCK_DATA: {USE_MOCK_DATA}")
+logger.info(f"PORT: {PORT}")
+logger.info(f"MODEL_PATH: {MODEL_PATH}")
+logger.info(f"LOG_LEVEL: {log_level}")
 
 # Mock implementation for development without models
 def mock_detect_sets(image_data):
@@ -96,10 +107,22 @@ def mock_detect_sets(image_data):
     pil_img.save(buffered, format="JPEG")
     img_str = base64.b64encode(buffered.getvalue()).decode()
     
+    sets = []
+    for i in range(num_sets):
+        sets.append({
+            'set_indices': [i*3, i*3+1, i*3+2],
+            'cards': [
+                {'Count': 1, 'Color': 'red', 'Fill': 'solid', 'Shape': 'oval', 'Coordinates': [0, 0, 0, 0]},
+                {'Count': 2, 'Color': 'green', 'Fill': 'striped', 'Shape': 'diamond', 'Coordinates': [0, 0, 0, 0]},
+                {'Count': 3, 'Color': 'purple', 'Fill': 'empty', 'Shape': 'squiggle', 'Coordinates': [0, 0, 0, 0]}
+            ]
+        })
+    
     return {
         "success": True,
         "setCount": num_sets,
-        "image": f"data:image/jpeg;base64,{img_str}"
+        "image": f"data:image/jpeg;base64,{img_str}",
+        "sets": sets
     }
 
 # Production implementation
@@ -118,28 +141,44 @@ def real_detect_sets(image_data):
     """
     logger.info("Using real SET detection")
     
-    # In a real implementation, you would:
-    # 1. Load your ML models
-    # 2. Preprocess the image
-    # 3. Detect cards
-    # 4. Identify valid SETs
-    # 5. Return results
+    try:
+        # For now, this is a placeholder for the real implementation
+        # In production, you would implement the actual model loading and inference here
+        
+        # In a real implementation, you would:
+        # 1. Load your ML models
+        # 2. Preprocess the image
+        # 3. Detect cards
+        # 4. Identify valid SETs
+        # 5. Return results
+        
+        # For this simplified version, we'll use the mock implementation
+        # In production, replace this with actual model loading and inference
+        return mock_detect_sets(image_data)
     
-    # For this simplified version, we'll use the mock implementation
-    # In production, replace this with actual model loading and inference
-    return mock_detect_sets(image_data)
+    except Exception as e:
+        logger.error(f"Error in SET detection: {str(e)}")
+        logger.error(traceback.format_exc())
+        return {
+            "success": False,
+            "error": f"Model inference error: {str(e)}",
+            "setCount": 0
+        }
 
 @app.route('/api/detect-sets', methods=['POST'])
 def detect_sets():
     """API endpoint to detect SETs in an uploaded image"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file part"}), 400
+        if 'image' not in request.files and 'file' not in request.files:
+            return jsonify({"success": False, "error": "No file part in the request"}), 400
             
-        file = request.files['file']
+        file = request.files.get('image') or request.files.get('file')
         if file.filename == '':
             return jsonify({"success": False, "error": "No file selected"}), 400
             
+        # Log request details
+        logger.info(f"Processing image: {file.filename} ({file.content_length} bytes)")
+        
         # Get the image data
         image_data = file.read()
         
@@ -149,16 +188,35 @@ def detect_sets():
         else:
             result = real_detect_sets(image_data)
             
+        if not result.get("success", False):
+            logger.error(f"SET detection failed: {result.get('error', 'Unknown error')}")
+        else:
+            logger.info(f"SET detection successful: {result.get('setCount', 0)} sets found")
+            
         return jsonify(result)
         
     except Exception as e:
         logger.error(f"Error processing image: {str(e)}", exc_info=True)
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({
+            "success": False, 
+            "error": f"Server error: {str(e)}",
+            "setCount": 0
+        }), 500
 
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint for monitoring"""
     return jsonify({"status": "ok"})
+
+@app.route('/api/health', methods=['GET'])
+def api_health():
+    """API health check endpoint"""
+    logger.info("Health check request received")
+    return jsonify({
+        "status": "ok",
+        "mode": "mock" if USE_MOCK_DATA else "production",
+        "version": "1.0.0"
+    })
 
 # For production deployments, serve the frontend
 @app.route('/', defaults={'path': ''})

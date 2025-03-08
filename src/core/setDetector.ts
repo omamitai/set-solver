@@ -14,12 +14,25 @@ interface SetDetectionResponse {
   image?: string;
   sets?: Array<{
     cards: number[];
-    properties: Array<{
+    properties?: Array<{
       name: string;
       values: string[];
     }>;
   }>;
 }
+
+/**
+ * Logs environment configuration for debugging
+ */
+const logEnvironmentConfig = () => {
+  const useMockData = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || '/api/detect-sets';
+  console.log('Environment config:', {
+    useMockData,
+    backendUrl,
+    nodeEnv: import.meta.env.MODE || 'unknown'
+  });
+};
 
 /**
  * Detects SET combinations in the uploaded image
@@ -30,7 +43,11 @@ interface SetDetectionResponse {
 export const detectSets = async (image: File): Promise<SetDetectionResponse> => {
   // Check if we're using mock data (for development)
   const useMockData = import.meta.env.VITE_USE_MOCK_DATA === 'true';
-  console.log('Using mock data:', useMockData);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || '/api/detect-sets';
+  
+  logEnvironmentConfig();
+  console.log(`Detecting sets in "${image.name}" (size: ${(image.size / 1024).toFixed(2)} KB, type: ${image.type})`);
+  console.log(`Mode: ${useMockData ? 'MOCK' : 'PRODUCTION'}`);
   
   if (useMockData) {
     console.log('Using mock data for SET detection');
@@ -60,19 +77,29 @@ export const detectSets = async (image: File): Promise<SetDetectionResponse> => 
   
   // Using real backend
   try {
-    console.log('Calling backend API for SET detection');
-    // Get the backend URL from environment variables
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || '/api/detect-sets';
+    console.log('Calling backend API for SET detection:', backendUrl);
+    
+    if (!backendUrl) {
+      throw new Error('Backend URL is not configured. Please check your .env file.');
+    }
     
     // Prepare form data for file upload
     const formData = new FormData();
     formData.append('image', image);
     
+    // Add timeout to API call
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30-second timeout
+    
     // Make the API call
     const response = await fetch(backendUrl, {
       method: 'POST',
       body: formData,
+      signal: controller.signal
     });
+    
+    // Clear the timeout
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
       // Handle HTTP error responses
@@ -89,15 +116,33 @@ export const detectSets = async (image: File): Promise<SetDetectionResponse> => 
     const data = await response.json();
     console.log('API response:', data);
     
+    if (!data.success) {
+      return {
+        success: false,
+        error: data.error || 'Unknown server error',
+        setCount: 0
+      };
+    }
+    
     return {
       success: true,
       setCount: data.sets?.length || 0,
-      image: data.processed_image || null,
+      image: data.image || null,
       sets: data.sets || []
     };
   } catch (error) {
     // Handle network or parsing errors
     console.error('Error calling SET detection API:', error);
+    
+    // Special handling for timeout errors
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return {
+        success: false,
+        error: 'Request timed out. The server took too long to respond.',
+        setCount: 0
+      };
+    }
+    
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
